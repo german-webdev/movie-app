@@ -1,0 +1,14 @@
+.movie-cards {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.card {
+  display: flex;
+  width: 454px;
+  height: 281px;
+  margin-bottom: 32px;
+
+  box-shadow: 3px 5px 20px -3px #c5c1c1;
+}

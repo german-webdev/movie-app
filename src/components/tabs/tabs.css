@@ -1,0 +1,24 @@
+.tabs::before {
+  border-bottom: none;
+}
+
+.css-dev-only-do-not-override-12jzuas.ant-tabs-top >.ant-tabs-nav::before, :where(.css-dev-only-do-not-override-12jzuas).ant-tabs-bottom >.ant-tabs-nav::before, :where(.css-dev-only-do-not-override-12jzuas).ant-tabs-top >div>.ant-tabs-nav::before, :where(.css-dev-only-do-not-override-12jzuas).ant-tabs-bottom >div>.ant-tabs-nav::before {
+  position: absolute;
+  left: 50%;
+  width: 145px;
+  border-bottom: 1px solid #dad5d5;
+  transform: translateX(-50%);
+}
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-tabs .ant-tabs-tab+.ant-tabs-tab {
+  margin: 0 0 0 5px;
+}
+
+.ant-tabs-tab {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  width: 70px;
+}
+
