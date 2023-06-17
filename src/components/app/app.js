@@ -1,3 +1,6 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable prefer-rest-params */
+/* eslint-disable func-names */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable import/order */
@@ -6,6 +9,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable react/function-component-definition */
 import React, { Component } from 'react';
+import _debounce from 'lodash/debounce';
 
 import MovieList from '../movie-list';
 import Tab from '../tabs';
@@ -65,6 +69,7 @@ class App extends Component {
       event.preventDefault();
       this.setState({
         loading: true,
+        currentPage: 1,
       });
 
       this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
@@ -78,6 +83,8 @@ class App extends Component {
 
   render() {
     const { movies, loading, error, totalResults, currentPage } = this.state;
+
+    const debounceOnChange = _debounce(this.handleSubmit, 600);
 
     const hasData = !(loading || error);
 
@@ -103,7 +110,7 @@ class App extends Component {
 
     return (
       <div className="wrapper">
-        <Tab onSubmit={this.handleSubmit} onChange={this.handleChange} />
+        <Tab onSubmit={debounceOnChange} onChange={this.handleChange} />
         {errorMessage}
         {spinner}
         {content}

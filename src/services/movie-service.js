@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-underscore-dangle */
@@ -35,11 +36,15 @@ export default class MovieService {
   }
 
   _transformDate(date) {
-    return format(new Date(date.split('-').map((int) => parseFloat(int))), 'MPP');
+    return date !== null ? format(new Date(date.split('-').map((int) => parseFloat(int))), 'MPP') : '';
   }
 
   _roundRate(rate) {
-    return rate.toString().length === 1 ? `${parseFloat(rate.toFixed(1))}.0` : parseFloat(rate.toFixed(1));
+    return rate !== null
+      ? rate.toString().length === 1
+        ? `${parseFloat(rate.toFixed(1))}.0`
+        : parseFloat(rate.toFixed(1))
+      : '0.0';
   }
 
   _textCutter(text, limit) {
