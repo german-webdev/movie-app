@@ -9,10 +9,8 @@ export default class MovieService {
 
   _apiKey = 'api_key=4029bbd50282fba9b344e7c00decf6d1';
 
-  _searchValue = 'query=';
-
-  async getResource(url, value) {
-    const res = await fetch(`${this._apiBase}${url}?${this._apiKey}&${this._searchValue}${value}`);
+  async getResource(url, value, page = 1) {
+    const res = await fetch(`${this._apiBase}${url}?${this._apiKey}&query=${value}&page=${page}`);
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -20,9 +18,14 @@ export default class MovieService {
     return await res.json();
   }
 
-  async getMovies(value) {
-    const movie = await this.getResource('search/movie', value);
+  async getMovies(value, page) {
+    const movie = await this.getResource('search/movie', value, page);
     return movie.results.map((item) => this._transformMovie(item));
+  }
+
+  async getTotalResults(value) {
+    const totalResults = await this.getResource('search/movie', value);
+    return this._transformPage(totalResults);
   }
 
   _getPoster(path) {
@@ -50,7 +53,7 @@ export default class MovieService {
     return `${text}...`;
   }
 
-  _transformMovie(movie) {
+  _transformMovie = (movie) => {
     return {
       date: this._transformDate(movie.release_date),
       description: this._textCutter(movie.overview, 150),
@@ -59,5 +62,10 @@ export default class MovieService {
       rate: this._roundRate(movie.vote_average),
       title: this._textCutter(movie.title, 999),
     };
-  }
+  };
+
+  _transformPage = (page) => {
+    const totalResults = page.total_results;
+    return totalResults;
+  };
 }

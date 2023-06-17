@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable no-return-assign */
 /* eslint-disable react/jsx-fragments */
 import React, { Fragment } from 'react';
 import { Rate } from 'antd';
@@ -6,6 +8,8 @@ import './movie-card.css';
 
 const MovieCard = (props) => {
   const { title, image, date, description, rate } = props;
+
+  const classRate = 'card-headheader__rate';
 
   return (
     <Fragment>
@@ -18,7 +22,7 @@ const MovieCard = (props) => {
         <div className="card-content">
           <div className="card-header">
             <h1 className="card-header__title">{title}</h1>
-            <span className="card-header__rate">
+            <span className={classRate}>
               <span className="card-header__rate-val">{rate}</span>
             </span>
           </div>

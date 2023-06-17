@@ -53,9 +53,23 @@
   justify-content: center;
   align-items: center;
 
-  border: 2px solid #E9D100;
+  border: 2px solid #E90000;
   border-radius: 50%;
 }
+
+.card-header__rate.more3 {
+  border: 2px solid #E97E00;
+}
+
+.card-header__rate.more5 {
+  border: 2px solid #E9D100;
+}
+
+.card-header__rate.more7 {
+  border: 2px solid #66E900;
+}
+
+
 
 .card-header__rate-val {
   font-style: normal;
