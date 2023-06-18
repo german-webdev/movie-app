@@ -64,15 +64,12 @@ class App extends Component {
     };
 
     this.handleSubmit = (event) => {
-      event.preventDefault();
       this.setState({
         loading: true,
+        searchTerm: event.target.value,
       });
       this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
       this.service.getTotalResults(this.state.searchTerm).then(this.getTotal);
-    };
-    this.handleChange = (event) => {
-      this.setState({ searchTerm: event.target.value });
     };
   }
 
@@ -98,7 +95,7 @@ class App extends Component {
     return (
       <div className="wrapper">
         <header className="Header">
-          <Tab onHandleSubmit={this.handleSubmit} onHandleChange={this.handleChange} searchTerm={searchTerm} />
+          <Tab onHandleSubmit={this.handleSubmit} searchTerm={searchTerm} />
         </header>
         <main className="main">
           {errorMessage}
