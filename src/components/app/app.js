@@ -71,7 +71,7 @@ class App extends Component {
     };
   }
 
-  componentDidUpdate(prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.state.searchTerm !== prevState.searchTerm) {
       this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
       this.service.getTotalResults(this.state.searchTerm).then(this.getTotal);
