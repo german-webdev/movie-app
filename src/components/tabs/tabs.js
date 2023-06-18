@@ -6,12 +6,12 @@ import SearchArea from '../search-area';
 
 import './tabs.css';
 
-const Tab = ({ onSubmit, onChange }) => {
+const Tab = ({ onHandleSubmit, onHandleChange, searchTerm }) => {
   const items = [
     {
       key: '1',
       label: 'Search',
-      children: <SearchArea onSubmit={onSubmit} onChange={onChange} />,
+      children: <SearchArea onHandleSubmit={onHandleSubmit} onHandleChange={onHandleChange} searchTerm={searchTerm} />,
     },
     {
       key: '2',

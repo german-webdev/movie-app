@@ -10,7 +10,7 @@ export default class MovieService {
 
   _apiKey = 'api_key=4029bbd50282fba9b344e7c00decf6d1';
 
-  async getResource(url, value, page = 1) {
+  async getResource(url, value = 'return', page = 1) {
     const res = await fetch(`${this._apiBase}${url}?${this._apiKey}&query=${value}&page=${page}`);
 
     if (!res.ok) {
@@ -30,21 +30,17 @@ export default class MovieService {
   }
 
   _getPoster(path) {
-    return path === null
+    return !path
       ? 'https://s3-ap-southeast-1.amazonaws.com/upcode/static/default-image.jpg'
       : `https://image.tmdb.org/t/p/original${path}`;
   }
 
   _transformDate(date) {
-    return date !== null ? format(new Date(date.split('-').map((int) => parseFloat(int))), 'MPP') : '';
+    return format(new Date(date.split('-').map((int) => parseFloat(int))), 'MPP');
   }
 
   _roundRate(rate) {
-    return rate !== null
-      ? rate.toString().length === 1
-        ? `${parseFloat(rate.toFixed(1))}.0`
-        : parseFloat(rate.toFixed(1))
-      : '0.0';
+    return rate.length === 1 ? `${rate.toFixed(1)}.0` : rate.toFixed(1);
   }
 
   _textCutter(text, limit) {
@@ -60,12 +56,12 @@ export default class MovieService {
 
   _transformMovie = (movie) => {
     return {
-      date: this._transformDate(movie.release_date),
-      description: this._textCutter(movie.overview, 150),
-      id: movie.id,
+      date: movie.release_date ? this._transformDate(movie.release_date) : '',
+      description: movie.overview ? this._textCutter(movie.overview, 150) : '',
+      id: movie.id ? movie.id : '',
       image: this._getPoster(movie.poster_path),
-      rate: this._roundRate(movie.vote_average),
-      title: this._textCutter(movie.title, 999),
+      rate: movie.vote_average ? this._roundRate(movie.vote_average) : '0.0',
+      title: movie.title ? this._textCutter(movie.title, 35) : '',
     };
   };
 

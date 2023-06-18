@@ -6,10 +6,11 @@ import './movie-list.css';
 
 const MovieList = ({ movies }) => {
   const movie = movies.map((item) => {
-    const { id, ...movieProps } = item;
+    const { id, rate, ...movieProps } = item;
+
     return (
       <div key={id} className="card">
-        <MovieCard {...movieProps} />
+        <MovieCard {...movieProps} rate={rate} />
       </div>
     );
   });

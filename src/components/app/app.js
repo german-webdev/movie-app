@@ -9,16 +9,15 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable react/function-component-definition */
 import React, { Component } from 'react';
-import _debounce from 'lodash/debounce';
 
 import MovieList from '../movie-list';
 import Tab from '../tabs';
 
 import './app.css';
-import { Pagination } from 'antd';
 import MovieService from '../../services/movie-service';
 import ErrorIndicator from '../error-indicator/error-indicator';
 import Spinner from '../spinner';
+import MyPagination from '../pagination';
 
 class App extends Component {
   service = new MovieService();
@@ -37,9 +36,7 @@ class App extends Component {
     this.nextPage = (pageNumber) => {
       this.service.getMovies(this.state.searchTerm, pageNumber).then(this.onMovieLoaded).catch(this.onError);
       console.log(pageNumber);
-      this.setState({
-        currentPage: pageNumber,
-      });
+      this.saveCurrentPage(pageNumber);
     };
 
     this.getTotal = (totalResults) => {
@@ -49,14 +46,15 @@ class App extends Component {
       });
     };
 
-    this.onMovieLoaded = (movies) => {
-      console.log(movies);
-      this.setState({
-        movies,
-        loading: false,
-      });
+    this.componentDidMount = () => {
+      this.onMovieLoaded = (movies) => {
+        console.log(movies);
+        this.setState({
+          movies,
+          loading: false,
+        });
+      };
     };
-
     // eslint-disable-next-line no-unused-vars
     this.onError = (error) => {
       this.setState({
@@ -69,22 +67,27 @@ class App extends Component {
       event.preventDefault();
       this.setState({
         loading: true,
-        currentPage: 1,
       });
-
       this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
       this.service.getTotalResults(this.state.searchTerm).then(this.getTotal);
     };
-
     this.handleChange = (event) => {
       this.setState({ searchTerm: event.target.value });
     };
   }
 
-  render() {
-    const { movies, loading, error, totalResults, currentPage } = this.state;
+  componentDidUpdate(prevState) {
+    if (this.state.currentPage !== prevState.currentPage) {
+      this.saveCurrentPage = (pageNumber) => {
+        this.setState({
+          currentPage: pageNumber,
+        });
+      };
+    }
+  }
 
-    const debounceOnChange = _debounce(this.handleSubmit, 600);
+  render() {
+    const { movies, loading, error, totalResults, currentPage, searchTerm } = this.state;
 
     const hasData = !(loading || error);
 
@@ -92,29 +95,19 @@ class App extends Component {
     const spinner = loading ? <Spinner /> : null;
     const content = hasData ? <MovieList movies={movies} /> : null;
 
-    const numberPages = Math.floor(totalResults / 20);
-    console.log(numberPages);
-    const pagination =
-      totalResults > 6 ? (
-        <Pagination
-          onChange={this.nextPage}
-          current={currentPage}
-          total={totalResults}
-          pageSize={numberPages}
-          responsive="false"
-          showLessItems="true"
-        />
-      ) : (
-        ''
-      );
-
     return (
       <div className="wrapper">
-        <Tab onSubmit={debounceOnChange} onChange={this.handleChange} />
-        {errorMessage}
-        {spinner}
-        {content}
-        {pagination}
+        <header className="Header">
+          <Tab onHandleSubmit={this.handleSubmit} onHandleChange={this.handleChange} searchTerm={searchTerm} />
+        </header>
+        <main className="main">
+          {errorMessage}
+          {spinner}
+          {content}
+        </main>
+        <footer className="footer">
+          <MyPagination totalResults={totalResults} currentPage={currentPage} nextPage={this.nextPage} />
+        </footer>
       </div>
     );
   }
