@@ -68,12 +68,14 @@ class App extends Component {
         loading: true,
         searchTerm: event.target.value,
       });
-      this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
-      this.service.getTotalResults(this.state.searchTerm).then(this.getTotal);
     };
   }
 
   componentDidUpdate(prevState) {
+    if (this.state.searchTerm !== prevState.searchTerm) {
+      this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
+      this.service.getTotalResults(this.state.searchTerm).then(this.getTotal);
+    }
     if (this.state.currentPage !== prevState.currentPage) {
       this.saveCurrentPage = (pageNumber) => {
         this.setState({
@@ -95,7 +97,7 @@ class App extends Component {
     return (
       <div className="wrapper">
         <header className="Header">
-          <Tab onHandleSubmit={this.handleSubmit} searchTerm={searchTerm} />
+          <Tab onHandleSubmit={this.handleSubmit} onHandleChange={this.handleChange} searchTerm={searchTerm} />
         </header>
         <main className="main">
           {errorMessage}
