@@ -8,10 +8,17 @@ import { format } from 'date-fns';
 export default class MovieService {
   _apiBase = 'https://api.themoviedb.org/3/';
 
-  _apiKey = 'api_key=4029bbd50282fba9b344e7c00decf6d1';
+  options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization:
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MDI5YmJkNTAyODJmYmE5YjM0NGU3YzAwZGVjZjZkMSIsInN1YiI6IjY0ODU4ZDkwOTkyNTljMDBlMmY1NTQwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MrM0rvXnzXECKbYj-jD0JFZ9ZXT9SqMvwX3gF72jNYA',
+    },
+  };
 
   async getResource(url, value = 'return', page = 1) {
-    const res = await fetch(`${this._apiBase}${url}?${this._apiKey}&query=${value}&page=${page}`);
+    const res = await fetch(`${this._apiBase}${url}?query=${value}&page=${page}`, this.options);
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -24,9 +31,25 @@ export default class MovieService {
     return movie.results.map((item) => this._transformMovie(item));
   }
 
+  async getAllGenres() {
+    const url = 'genre/movie/list';
+    const res = await fetch(`${this._apiBase}${url}?language=en`, this.options);
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${url}, received ${res.status}`);
+    }
+    return await res.json();
+  }
+
   async getTotalResults(value) {
     const totalResults = await this.getResource('search/movie', value);
     return this._transformPage(totalResults);
+  }
+
+  genres = [];
+
+  async getGenresArr() {
+    const genresArr = await this.getAllGenres();
+    this.genres.push(genresArr);
   }
 
   _getPoster(path) {
@@ -62,6 +85,7 @@ export default class MovieService {
       image: this._getPoster(movie.poster_path),
       rate: movie.vote_average ? this._roundRate(movie.vote_average) : '0.0',
       title: movie.title ? this._textCutter(movie.title, 35) : '',
+      genres: movie.genre_ids,
     };
   };
 
@@ -70,3 +94,6 @@ export default class MovieService {
     return totalResults;
   };
 }
+
+// const genres = new MovieService();
+// genres.getAllGenres().then((res) => console.log(res));

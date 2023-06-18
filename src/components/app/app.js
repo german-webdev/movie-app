@@ -9,7 +9,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable react/function-component-definition */
 import React, { Component } from 'react';
-
+import { MovieServiceProvider, MovieServiceConsumer } from '../movie-service-context/movie-service-context';
 import MovieList from '../movie-list';
 import Tab from '../tabs';
 
@@ -26,11 +26,35 @@ class App extends Component {
     super();
     this.state = {
       movies: [],
+      genres: [],
+      genreName: [],
       loading: false,
       searchTerm: '',
 
       totalResults: 0,
       currentPage: 1,
+    };
+
+    this.pushGenres = () => {
+      this.setState({ genres: this.service.getGenresArr() });
+    };
+
+    this.getNameGenres = () => {
+      this.getName = (genres = this.state.genres, keys = this.state.movies.genres) => {
+        console.log(genres);
+        const arr = [];
+        for (let i = 0; i < genres.length; i++) {
+          for (let j = 0; j < keys.length; j++) {
+            if (genres[i].id === keys[j]) {
+              arr.push(genres[i].name);
+            }
+          }
+        }
+        return arr;
+      };
+      this.setState({
+        genreName: this.getName(),
+      });
     };
 
     this.nextPage = (pageNumber) => {
@@ -64,6 +88,8 @@ class App extends Component {
     };
 
     this.handleSubmit = (event) => {
+      this.getNameGenres();
+      console.log(this.state.movies.genres);
       this.setState({
         loading: true,
         searchTerm: event.target.value,
@@ -86,28 +112,30 @@ class App extends Component {
   }
 
   render() {
-    const { movies, loading, error, totalResults, currentPage, searchTerm } = this.state;
+    const { movies, loading, error, totalResults, currentPage, searchTerm, genreName } = this.state;
 
     const hasData = !(loading || error);
 
     const errorMessage = error ? <ErrorIndicator /> : null;
     const spinner = loading ? <Spinner /> : null;
-    const content = hasData ? <MovieList movies={movies} /> : null;
+    const content = hasData ? <MovieList movies={movies} genreName={genreName} /> : null;
 
     return (
-      <div className="wrapper">
-        <header className="Header">
-          <Tab onHandleSubmit={this.handleSubmit} onHandleChange={this.handleChange} searchTerm={searchTerm} />
-        </header>
-        <main className="main">
-          {errorMessage}
-          {spinner}
-          {content}
-        </main>
-        <footer className="footer">
-          <MyPagination totalResults={totalResults} currentPage={currentPage} nextPage={this.nextPage} />
-        </footer>
-      </div>
+      <MovieServiceProvider value={this.MovieService}>
+        <div className="wrapper">
+          <header className="Header">
+            <Tab onHandleSubmit={this.handleSubmit} onHandleChange={this.handleChange} searchTerm={searchTerm} />
+          </header>
+          <main className="main">
+            {errorMessage}
+            {spinner}
+            {content}
+          </main>
+          <footer className="footer">
+            <MyPagination totalResults={totalResults} currentPage={currentPage} nextPage={this.nextPage} />
+          </footer>
+        </div>
+      </MovieServiceProvider>
     );
   }
 }
