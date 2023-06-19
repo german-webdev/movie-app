@@ -8,6 +8,8 @@
 /* eslint-disable react/no-unused-state */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable react/function-component-definition */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
 import React, { Component } from 'react';
 import { MovieServiceProvider, MovieServiceConsumer } from '../movie-service-context/movie-service-context';
 import MovieList from '../movie-list';
@@ -28,40 +30,26 @@ class App extends Component {
       movies: [],
       genreName: [],
       loading: false,
-      searchTerm: '',
+      searchTerm: 'Return',
 
       totalResults: 0,
       currentPage: 1,
     };
 
-    this.getNameGenres = () => {
-      const genresIds = this.state.movies.map((item) => {
-        return item.genresIds;
-      });
-      this.getName = (genres = this.state.genres, keys = genresIds) => {
-        console.log('genres:', genres);
-        console.log('keys:', keys);
-        const arr = [];
-        for (let i = 0; i < genres.length; i++) {
-          for (let j = 0; j < keys.length; j++) {
-            if (genres[i].id === keys[j]) {
-              arr.push(genres[i].name);
-            }
-            console.log('keys[j]:', keys[j]);
-          }
-          console.log('genres[i]:', genres[i].id);
-        }
-        console.log('arr:', arr);
-        return arr;
-      };
-      this.setState({
-        genreName: this.getName(),
+    this.getNameGenres = (movies) => {
+      return movies.map((movie) => {
+        movie.genresIds = movie.genresIds.map((genreId) => {
+          return {
+            id: genreId,
+            name: this.state.genres.filter((genre) => genre.id === genreId)[0].name,
+          };
+        });
+        return movie;
       });
     };
 
     this.nextPage = (pageNumber) => {
       this.service.getMovies(this.state.searchTerm, pageNumber).then(this.onMovieLoaded).catch(this.onError);
-      this.getNameGenres();
       this.saveCurrentPage(pageNumber);
     };
 
@@ -81,7 +69,7 @@ class App extends Component {
       this.getArr();
       this.onMovieLoaded = (movies) => {
         this.setState({
-          movies,
+          movies: this.getNameGenres(movies),
           loading: false,
         });
       };
@@ -95,7 +83,6 @@ class App extends Component {
     };
 
     this.handleSubmit = (event) => {
-      this.getNameGenres();
       this.setState({
         loading: true,
         searchTerm: event.target.value,
@@ -119,7 +106,6 @@ class App extends Component {
     if (this.state.searchTerm !== prevState.searchTerm) {
       this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
       this.service.getTotalResults(this.state.searchTerm).then(this.getTotal);
-      this.getNameGenres();
     }
   }
 
@@ -130,7 +116,7 @@ class App extends Component {
 
     const errorMessage = error ? <ErrorIndicator /> : null;
     const spinner = loading ? <Spinner /> : null;
-    const content = hasData ? <MovieList movies={movies} genreName={genreName} /> : null;
+    const content = hasData ? <MovieList movies={movies} /> : null;
 
     return (
       <MovieServiceProvider value={this.MovieService}>

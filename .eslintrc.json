@@ -36,6 +36,7 @@
         "import/no-unresolved": [2, { "caseSensitive": false }],
         "import/no-extraneous-dependencies": 0,
         "no-plusplus": 0,
+        "no-restricted-syntax": 0,
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "react/jsx-props-no-spreading": 0,
         "react/destructuring-assignment": 0,

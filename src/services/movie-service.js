@@ -99,6 +99,3 @@ export default class MovieService {
     return totalResults;
   };
 }
-
-// const genres = new MovieService();
-// genres.getAllGenres().then((res) => console.log(res));
