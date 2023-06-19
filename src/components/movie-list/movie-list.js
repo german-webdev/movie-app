@@ -10,7 +10,7 @@ const MovieList = ({ movies }) => {
 
     return (
       <div key={id} className="card">
-        <MovieCard {...movieProps} rate={rate} />
+        <MovieCard {...movieProps} rate={rate} id={id} />
       </div>
     );
   });

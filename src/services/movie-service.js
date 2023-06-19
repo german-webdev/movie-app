@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 export default class MovieService {
   _apiBase = 'https://api.themoviedb.org/3/';
 
-  options = {
+  GET_OPTIONS = {
     method: 'GET',
     headers: {
       accept: 'application/json',
@@ -17,9 +17,77 @@ export default class MovieService {
     },
   };
 
-  async getResource(url, value = 'return', page = 1) {
-    const res = await fetch(`${this._apiBase}${url}?query=${value}&page=${page}`, this.options);
+  POST_OPTIONS = {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      Authorization:
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MDI5YmJkNTAyODJmYmE5YjM0NGU3YzAwZGVjZjZkMSIsInN1YiI6IjY0ODU4ZDkwOTkyNTljMDBlMmY1NTQwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MrM0rvXnzXECKbYj-jD0JFZ9ZXT9SqMvwX3gF72jNYA',
+    },
+  };
 
+  async createGuestSession() {
+    const url = 'authentication/guest_session/new';
+    const res = await fetch(`${this._apiBase}${url}`, this.GET_OPTIONS);
+
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${url}, received ${res.status}`);
+    }
+    return await res.json();
+  }
+
+  async createRequestToken() {
+    const url = 'authentication/token/new';
+    const res = await fetch(`${this._apiBase}${url}`, this.GET_OPTIONS);
+
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${url}, received ${res.status}`);
+    }
+    return await res.json();
+  }
+
+  async addRating(movieId, value, sessionId) {
+    const url = `${this._apiBase}movie/${movieId}/rating?guest_session_id=${sessionId}&session_id=''`;
+
+    const POST_OPTIONS = {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        Authorization:
+          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MDI5YmJkNTAyODJmYmE5YjM0NGU3YzAwZGVjZjZkMSIsInN1YiI6IjY0ODU4ZDkwOTkyNTljMDBlMmY1NTQwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MrM0rvXnzXECKbYj-jD0JFZ9ZXT9SqMvwX3gF72jNYA',
+      },
+      body: `${value}`,
+    };
+    const res = await fetch(url, POST_OPTIONS);
+
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${url}, received ${res.status}`);
+    }
+  }
+
+  async getGuestSessionId() {
+    const id = await this.createGuestSession();
+    return this._transformId(id);
+  }
+
+  async getRequestToken() {
+    const token = await this.createRequestToken();
+    return this._transformToken(token);
+  }
+
+  async getResource(url, value = 'return', page = 1) {
+    const res = await fetch(`${this._apiBase}${url}?query=${value}&page=${page}`, this.GET_OPTIONS);
+
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${url}, received ${res.status}`);
+    }
+    return await res.json();
+  }
+
+  async getAllGenres() {
+    const url = 'genre/movie/list';
+    const res = await fetch(`${this._apiBase}${url}?language=en`, this.GET_OPTIONS);
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
     }
@@ -31,23 +99,32 @@ export default class MovieService {
     return movie.results.map((item) => this._transformMovie(item));
   }
 
-  async getAllGenres() {
-    const url = 'genre/movie/list';
-    const res = await fetch(`${this._apiBase}${url}?language=en`, this.options);
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url}, received ${res.status}`);
-    }
-    return await res.json();
-  }
-
   async getTotalResults(value) {
     const totalResults = await this.getResource('search/movie', value);
     return this._transformPage(totalResults);
   }
 
-  async getGenresArr() {
+  async getGenres() {
+    const tokenValue = await this.getRequestToken();
+    const { token } = tokenValue;
+    console.log(token);
+    fetch('https://api.themoviedb.org/3/authentication', this.GET_OPTIONS);
     const genresArr = await this.getAllGenres();
     return genresArr.genres.map((item) => this._transformGenresArr(item));
+  }
+
+  _transformId(id) {
+    return {
+      success: id.success,
+      time: id.expires_at,
+      id: id.guest_session_id,
+    };
+  }
+
+  _transformToken(token) {
+    return {
+      token: token.request_token,
+    };
   }
 
   _transformGenresArr(genres) {

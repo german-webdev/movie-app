@@ -19,23 +19,26 @@
 }
 
 .card-header {
-  position: relative;
   display: flex;
-  margin-bottom: auto;
   justify-content: space-between;
   align-items: center;
-  color: #333333;
+
+  line-height: 18px;
+
+  position: relative;
+
+  margin-bottom: 5px;
   padding: 0;
-  line-height: 28px;
+
   background-color: transparent;
-  margin-bottom: 12px;
+  color: #333333;
 }
 
 .card-header__title {
   font-style: normal;
   font-weight: 500;
   font-size: 20px;
-  line-height: 28px;
+  line-height: 22px;
 
   margin-right: 20px;
 
@@ -48,10 +51,11 @@
   top: 0;
 
   display: flex;
-  width: 30px;
-  height: 30px;
   justify-content: center;
   align-items: center;
+
+  width: 30px;
+  height: 30px;
 
   border: 2px solid #E90000;
   border-radius: 50%;
@@ -88,7 +92,8 @@
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
-  line-height: 22px;
+  line-height: 16px;
+
   margin-bottom: 5px;
   
   color: #827E7E;
@@ -97,10 +102,12 @@
 .film-genre {
   display: flex;
   flex-wrap: wrap;
+
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
   line-height: 15px;
+
   margin-bottom: 5px;
  
   color: rgba(0, 0, 0, 0.65);
@@ -112,14 +119,13 @@
   font-size: 12px;
   line-height: 15px;
 
-  color: rgba(0, 0, 0, 0.65);
-
   padding: 3px;
-  margin: 2px 4px;
+  margin: 2px 4px 0px 0px;
 
   border: 1px solid #D9D9D9;
   border-radius: 2px;
   background: #FAFAFA;
+  color: rgba(0, 0, 0, 0.65);
 
 }
 
@@ -143,11 +149,12 @@
 
 .card-stars {
   display: flex;
-  position: relative;
   flex-grow: 1;
   justify-content: center;
   align-items: center;
   flex-wrap: nowrap;
+
+  position: relative;
   bottom: 0;
 
   transform: scale(.8);

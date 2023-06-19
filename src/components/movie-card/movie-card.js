@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-return-assign */
 /* eslint-disable react/jsx-fragments */
@@ -5,17 +6,50 @@ import React, { Fragment, Component } from 'react';
 import { Rate } from 'antd';
 
 import './movie-card.css';
+import MovieService from '../../services/movie-service';
 
 class MovieCard extends Component {
+  service = new MovieService();
+
   constructor(props) {
     super(props);
     this.state = {
       rate: this.props.rate,
+      currentMovieId: this.props.id,
+      stars: 0,
+    };
+
+    this.getStateSessionId = (idSessionInfo) => {
+      this.setState({
+        idSessionInfo,
+      });
+    };
+
+    this.onChangeStarValue = (stars) => {
+      this.setState({
+        stars,
+      });
+      this.onClickCard();
+      this.service.addRating(this.state.currentMovieId, stars, this.state.idSessionInfo.id);
+      console.log(this.state.stars);
+    };
+
+    this.getSessionId = () => {
+      this.service.getGuestSessionId().then(this.getStateSessionId);
     };
   }
 
+  componentDidMount() {
+    this.getSessionId();
+  }
+
+  onClickCard() {
+    console.log(this.state.currentMovieId);
+    return this.state.currentMovieId;
+  }
+
   render() {
-    const { rate } = this.state;
+    const { rate, stars } = this.state;
     const { title, image, date, description, genresIds } = this.props;
 
     let classRate = 'card-header__rate';
@@ -56,7 +90,15 @@ class MovieCard extends Component {
             </div>
           </div>
           <div className="card-footer">
-            <Rate className="card-stars" count={10} allowHalf defaultValue={2.5} />
+            <Rate
+              className="card-stars"
+              count={10}
+              allowHalf
+              defaultValue={0}
+              value={stars}
+              onChange={this.onChangeStarValue}
+              allowClear={false}
+            />
           </div>
         </div>
       </Fragment>

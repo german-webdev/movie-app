@@ -96,12 +96,10 @@ class App extends Component {
     };
 
     this.getArr = () => {
-      this.service.getGenresArr().then(this.getGenresArr);
+      this.service.getGenres().then(this.getGenresArr);
     };
   }
 
-  // componentDidMount() {
-  // }
   componentDidUpdate(prevProps, prevState) {
     if (this.state.searchTerm !== prevState.searchTerm) {
       this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
@@ -110,7 +108,7 @@ class App extends Component {
   }
 
   render() {
-    const { movies, loading, error, totalResults, currentPage, searchTerm, genreName } = this.state;
+    const { movies, loading, error, totalResults, currentPage, searchTerm } = this.state;
 
     const hasData = !(loading || error);
 
@@ -119,7 +117,7 @@ class App extends Component {
     const content = hasData ? <MovieList movies={movies} /> : null;
 
     return (
-      <MovieServiceProvider value={this.MovieService}>
+      <MovieServiceProvider value={this.service}>
         <div className="wrapper">
           <header className="Header">
             <Tab onHandleSubmit={this.handleSubmit} onHandleChange={this.handleChange} searchTerm={searchTerm} />
