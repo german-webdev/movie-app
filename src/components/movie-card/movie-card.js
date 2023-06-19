@@ -16,7 +16,7 @@ class MovieCard extends Component {
 
   render() {
     const { rate } = this.state;
-    const { title, image, date, description, genreName } = this.props;
+    const { title, image, date, description, genresIds } = this.props;
 
     let classRate = 'card-header__rate';
 
@@ -45,11 +45,10 @@ class MovieCard extends Component {
             </div>
             <div className="film-date">{date}</div>
             <div className="film-genre">
-              {genreName.map((item, i) => (
+              {genresIds?.map((genre, i) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <span key={i} className="film-genre__item">
-                  {item}
-                  console.log(item)
+                  {genre.name}
                 </span>
               ))}
             </div>

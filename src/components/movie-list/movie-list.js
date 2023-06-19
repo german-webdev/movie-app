@@ -4,13 +4,13 @@ import MovieCard from '../movie-card';
 
 import './movie-list.css';
 
-const MovieList = ({ movies, genreName }) => {
+const MovieList = ({ movies }) => {
   const movie = movies.map((item) => {
     const { id, rate, ...movieProps } = item;
 
     return (
       <div key={id} className="card">
-        <MovieCard {...movieProps} rate={rate} genreName={genreName} />
+        <MovieCard {...movieProps} rate={rate} />
       </div>
     );
   });
