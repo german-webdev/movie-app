@@ -49,6 +49,7 @@ class MovieCard extends Component {
                 // eslint-disable-next-line react/no-array-index-key
                 <span key={i} className="film-genre__item">
                   {item}
+                  console.log(item)
                 </span>
               ))}
             </div>

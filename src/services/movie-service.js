@@ -45,11 +45,16 @@ export default class MovieService {
     return this._transformPage(totalResults);
   }
 
-  genres = [];
-
   async getGenresArr() {
     const genresArr = await this.getAllGenres();
-    this.genres.push(genresArr);
+    return genresArr.genres.map((item) => this._transformGenresArr(item));
+  }
+
+  _transformGenresArr(genres) {
+    return {
+      id: genres.id,
+      name: genres.name,
+    };
   }
 
   _getPoster(path) {
@@ -85,7 +90,7 @@ export default class MovieService {
       image: this._getPoster(movie.poster_path),
       rate: movie.vote_average ? this._roundRate(movie.vote_average) : '0.0',
       title: movie.title ? this._textCutter(movie.title, 35) : '',
-      genres: movie.genre_ids,
+      genresIds: movie.genre_ids,
     };
   };
 

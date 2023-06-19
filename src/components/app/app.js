@@ -26,7 +26,6 @@ class App extends Component {
     super();
     this.state = {
       movies: [],
-      genres: [],
       genreName: [],
       loading: false,
       searchTerm: '',
@@ -35,21 +34,24 @@ class App extends Component {
       currentPage: 1,
     };
 
-    this.pushGenres = () => {
-      this.setState({ genres: this.service.getGenresArr() });
-    };
-
     this.getNameGenres = () => {
-      this.getName = (genres = this.state.genres, keys = this.state.movies.genres) => {
-        console.log(genres);
+      const genresIds = this.state.movies.map((item) => {
+        return item.genresIds;
+      });
+      this.getName = (genres = this.state.genres, keys = genresIds) => {
+        console.log('genres:', genres);
+        console.log('keys:', keys);
         const arr = [];
         for (let i = 0; i < genres.length; i++) {
           for (let j = 0; j < keys.length; j++) {
             if (genres[i].id === keys[j]) {
               arr.push(genres[i].name);
             }
+            console.log('keys[j]:', keys[j]);
           }
+          console.log('genres[i]:', genres[i].id);
         }
+        console.log('arr:', arr);
         return arr;
       };
       this.setState({
@@ -59,27 +61,32 @@ class App extends Component {
 
     this.nextPage = (pageNumber) => {
       this.service.getMovies(this.state.searchTerm, pageNumber).then(this.onMovieLoaded).catch(this.onError);
-      console.log(pageNumber);
+      this.getNameGenres();
       this.saveCurrentPage(pageNumber);
     };
 
+    this.saveCurrentPage = (pageNumber) => {
+      this.setState({
+        currentPage: pageNumber,
+      });
+    };
+
     this.getTotal = (totalResults) => {
-      console.log(totalResults);
       this.setState({
         totalResults,
       });
     };
 
     this.componentDidMount = () => {
+      this.getArr();
       this.onMovieLoaded = (movies) => {
-        console.log(movies);
         this.setState({
           movies,
           loading: false,
         });
       };
     };
-    // eslint-disable-next-line no-unused-vars
+
     this.onError = (error) => {
       this.setState({
         error: true,
@@ -89,25 +96,30 @@ class App extends Component {
 
     this.handleSubmit = (event) => {
       this.getNameGenres();
-      console.log(this.state.movies.genres);
       this.setState({
         loading: true,
         searchTerm: event.target.value,
       });
     };
+
+    this.getGenresArr = (genres) => {
+      this.setState({
+        genres,
+      });
+    };
+
+    this.getArr = () => {
+      this.service.getGenresArr().then(this.getGenresArr);
+    };
   }
 
+  // componentDidMount() {
+  // }
   componentDidUpdate(prevProps, prevState) {
     if (this.state.searchTerm !== prevState.searchTerm) {
       this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
       this.service.getTotalResults(this.state.searchTerm).then(this.getTotal);
-    }
-    if (this.state.currentPage !== prevState.currentPage) {
-      this.saveCurrentPage = (pageNumber) => {
-        this.setState({
-          currentPage: pageNumber,
-        });
-      };
+      this.getNameGenres();
     }
   }
 

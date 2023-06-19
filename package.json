@@ -8,11 +8,11 @@
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.6.1",
     "date-fns": "^2.30.0",
-    "lodash.debounce": "^4.0.8",
-    "prop-types": "^15.8.1",
+    "install": "^0.13.0",
+    "lodash": "^4.17.21",
+    "npm": "^9.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-lodash": "^0.1.2",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -21,9 +21,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "prepare": "husky install",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix --color",
-    "prepare": "husky install"
+    "format": "prettier --write"
   },
   "eslintConfig": {
     "extends": [
@@ -44,30 +45,16 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.22.1",
-    "@babel/eslint-parser": "^7.21.8",
-    "eslint": "^8.42.0",
+    "eslint": "^8.43.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
     "prettier": "2.8.8"
-  },
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/german-webdev/react-todos.git"
-  },
-  "author": "P.G.",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/german-webdev/react-todos/issues"
-  },
-  "homepage": "/"
+  }
 }
