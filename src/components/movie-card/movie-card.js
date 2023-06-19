@@ -45,9 +45,8 @@ class MovieCard extends Component {
             </div>
             <div className="film-date">{date}</div>
             <div className="film-genre">
-              {genresIds?.map((genre, i) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <span key={i} className="film-genre__item">
+              {genresIds?.map((genre) => (
+                <span key={genre.id} className="film-genre__item">
                   {genre.name}
                 </span>
               ))}
