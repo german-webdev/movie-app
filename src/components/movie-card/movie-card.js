@@ -45,6 +45,7 @@ class MovieCard extends Component {
 
   onClickCard() {
     console.log(this.state.currentMovieId);
+    console.log(this.state.idSessionInfo.id);
     return this.state.currentMovieId;
   }
 
@@ -94,7 +95,6 @@ class MovieCard extends Component {
               className="card-stars"
               count={10}
               allowHalf
-              defaultValue={0}
               value={stars}
               onChange={this.onChangeStarValue}
               allowClear={false}

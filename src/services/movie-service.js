@@ -8,12 +8,14 @@ import { format } from 'date-fns';
 export default class MovieService {
   _apiBase = 'https://api.themoviedb.org/3/';
 
+  _apiKey = '4029bbd50282fba9b344e7c00decf6d1';
+
   GET_OPTIONS = {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      Authorization:
-        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MDI5YmJkNTAyODJmYmE5YjM0NGU3YzAwZGVjZjZkMSIsInN1YiI6IjY0ODU4ZDkwOTkyNTljMDBlMmY1NTQwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MrM0rvXnzXECKbYj-jD0JFZ9ZXT9SqMvwX3gF72jNYA',
+      // Authorization:
+      //   'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MDI5YmJkNTAyODJmYmE5YjM0NGU3YzAwZGVjZjZkMSIsInN1YiI6IjY0ODU4ZDkwOTkyNTljMDBlMmY1NTQwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MrM0rvXnzXECKbYj-jD0JFZ9ZXT9SqMvwX3gF72jNYA',
     },
   };
 
@@ -21,14 +23,14 @@ export default class MovieService {
     method: 'POST',
     headers: {
       accept: 'application/json',
-      Authorization:
-        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MDI5YmJkNTAyODJmYmE5YjM0NGU3YzAwZGVjZjZkMSIsInN1YiI6IjY0ODU4ZDkwOTkyNTljMDBlMmY1NTQwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MrM0rvXnzXECKbYj-jD0JFZ9ZXT9SqMvwX3gF72jNYA',
+      // Authorization:
+      // 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MDI5YmJkNTAyODJmYmE5YjM0NGU3YzAwZGVjZjZkMSIsInN1YiI6IjY0ODU4ZDkwOTkyNTljMDBlMmY1NTQwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MrM0rvXnzXECKbYj-jD0JFZ9ZXT9SqMvwX3gF72jNYA',
     },
   };
 
   async createGuestSession() {
     const url = 'authentication/guest_session/new';
-    const res = await fetch(`${this._apiBase}${url}`, this.GET_OPTIONS);
+    const res = await fetch(`${this._apiBase}${url}?api_key=${this._apiKey}`, this.GET_OPTIONS);
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -38,7 +40,7 @@ export default class MovieService {
 
   async createRequestToken() {
     const url = 'authentication/token/new';
-    const res = await fetch(`${this._apiBase}${url}`, this.GET_OPTIONS);
+    const res = await fetch(`${this._apiBase}${url}?api_key=${this._apiKey}`, this.GET_OPTIONS);
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -47,17 +49,15 @@ export default class MovieService {
   }
 
   async addRating(movieId, value, sessionId) {
-    const url = `${this._apiBase}movie/${movieId}/rating?guest_session_id=${sessionId}&session_id=''`;
+    const url = `${this._apiBase}movie/${movieId}/rating?api_key=${this._apiKey}&guest_session_id=${sessionId}`;
 
     const POST_OPTIONS = {
       method: 'POST',
       headers: {
         accept: 'application/json',
-        'content-type': 'application/json',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MDI5YmJkNTAyODJmYmE5YjM0NGU3YzAwZGVjZjZkMSIsInN1YiI6IjY0ODU4ZDkwOTkyNTljMDBlMmY1NTQwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MrM0rvXnzXECKbYj-jD0JFZ9ZXT9SqMvwX3gF72jNYA',
+        'Content-Type': 'application/json;charset=utf-8',
       },
-      body: `${value}`,
+      body: `{"value":${value}}`,
     };
     const res = await fetch(url, POST_OPTIONS);
 
@@ -77,7 +77,10 @@ export default class MovieService {
   }
 
   async getResource(url, value = 'return', page = 1) {
-    const res = await fetch(`${this._apiBase}${url}?query=${value}&page=${page}`, this.GET_OPTIONS);
+    const res = await fetch(
+      `${this._apiBase}${url}?api_key=${this._apiKey}&query=${value}&page=${page}`,
+      this.GET_OPTIONS
+    );
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -87,7 +90,7 @@ export default class MovieService {
 
   async getAllGenres() {
     const url = 'genre/movie/list';
-    const res = await fetch(`${this._apiBase}${url}?language=en`, this.GET_OPTIONS);
+    const res = await fetch(`${this._apiBase}${url}?api_key=${this._apiKey}&language=en`, this.GET_OPTIONS);
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
     }
@@ -108,7 +111,7 @@ export default class MovieService {
     const tokenValue = await this.getRequestToken();
     const { token } = tokenValue;
     console.log(token);
-    fetch('https://api.themoviedb.org/3/authentication', this.GET_OPTIONS);
+    fetch(`https://api.themoviedb.org/3/authentication?api_key=${this._apiKey}`, this.GET_OPTIONS);
     const genresArr = await this.getAllGenres();
     return genresArr.genres.map((item) => this._transformGenresArr(item));
   }
