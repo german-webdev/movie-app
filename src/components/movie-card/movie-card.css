@@ -57,23 +57,21 @@
   width: 30px;
   height: 30px;
 
-  border: 2px solid #E90000;
+  border: 2px solid #e90000;
   border-radius: 50%;
 }
 
 .card-header__rate.more3 {
-  border: 2px solid #E97E00;
+  border: 2px solid #e97e00;
 }
 
 .card-header__rate.more5 {
-  border: 2px solid #E9D100;
+  border: 2px solid #e9d100;
 }
 
 .card-header__rate.more7 {
-  border: 2px solid #66E900;
+  border: 2px solid #66e900;
 }
-
-
 
 .card-header__rate-val {
   font-style: normal;
@@ -88,18 +86,18 @@
   justify-content: space-between;
 }
 
-.film-date {
+.movie-date {
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
   line-height: 16px;
 
   margin-bottom: 5px;
-  
-  color: #827E7E;
+
+  color: #827e7e;
 }
 
-.film-genre {
+.movie-genre {
   display: flex;
   flex-wrap: wrap;
 
@@ -109,11 +107,11 @@
   line-height: 15px;
 
   margin-bottom: 5px;
- 
+
   color: rgba(0, 0, 0, 0.65);
 }
 
-.film-genre__item {
+.movie-genre__item {
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -122,11 +120,10 @@
   padding: 3px;
   margin: 2px 4px 0px 0px;
 
-  border: 1px solid #D9D9D9;
+  border: 1px solid #d9d9d9;
   border-radius: 2px;
-  background: #FAFAFA;
+  background: #fafafa;
   color: rgba(0, 0, 0, 0.65);
-
 }
 
 .movie-description {
@@ -140,8 +137,6 @@
 
   color: #000000;
 }
-
-
 
 .card-footer {
   margin-top: auto;
@@ -157,5 +152,5 @@
   position: relative;
   bottom: 0;
 
-  transform: scale(.8);
+  transform: scale(0.8);
 }

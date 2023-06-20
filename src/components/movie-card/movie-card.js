@@ -31,7 +31,6 @@ class MovieCard extends Component {
       });
       this.onClickCard();
       this.service.addRating(this.state.currentMovieId, stars, this.state.idSessionInfo.id);
-      console.log(this.state.stars);
     };
 
     this.getSessionId = () => {
@@ -44,8 +43,6 @@ class MovieCard extends Component {
   }
 
   onClickCard() {
-    console.log(this.state.currentMovieId);
-    console.log(this.state.idSessionInfo.id);
     return this.state.currentMovieId;
   }
 
@@ -78,10 +75,10 @@ class MovieCard extends Component {
                 <span className="card-header__rate-val">{rate}</span>
               </span>
             </div>
-            <div className="film-date">{date}</div>
-            <div className="film-genre">
+            <div className="movie-date">{date}</div>
+            <div className="movie-genre">
               {genresIds?.map((genre) => (
-                <span key={genre.id} className="film-genre__item">
+                <span key={genre.id} className="movie-genre__item">
                   {genre.name}
                 </span>
               ))}

@@ -108,9 +108,6 @@ export default class MovieService {
   }
 
   async getGenres() {
-    const tokenValue = await this.getRequestToken();
-    const { token } = tokenValue;
-    console.log(token);
     fetch(`https://api.themoviedb.org/3/authentication?api_key=${this._apiKey}`, this.GET_OPTIONS);
     const genresArr = await this.getAllGenres();
     return genresArr.genres.map((item) => this._transformGenresArr(item));
