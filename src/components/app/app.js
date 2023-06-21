@@ -36,6 +36,18 @@ class App extends Component {
       currentPage: 1,
     };
 
+    this.getTotal = (totalResults) => {
+      this.setState({
+        totalResults,
+      });
+    };
+
+    this.getGenresArr = (genres) => {
+      this.setState({
+        genres,
+      });
+    };
+
     this.getNameGenres = (movies) => {
       return movies.map((movie) => {
         movie.genresIds = movie.genresIds.map((genreId) => {
@@ -56,12 +68,6 @@ class App extends Component {
     this.saveCurrentPage = (pageNumber) => {
       this.setState({
         currentPage: pageNumber,
-      });
-    };
-
-    this.getTotal = (totalResults) => {
-      this.setState({
-        totalResults,
       });
     };
 
@@ -89,12 +95,6 @@ class App extends Component {
       });
     };
 
-    this.getGenresArr = (genres) => {
-      this.setState({
-        genres,
-      });
-    };
-
     this.getArr = () => {
       this.service.getGenres().then(this.getGenresArr);
     };
@@ -106,6 +106,12 @@ class App extends Component {
       this.service.getTotalResults(this.state.searchTerm).then(this.getTotal);
     }
   }
+
+  // stateSetter = (state) => {
+  //   this.setState({
+  //     state,
+  //   });
+  // };
 
   render() {
     const { movies, loading, error, totalResults, currentPage, searchTerm } = this.state;
