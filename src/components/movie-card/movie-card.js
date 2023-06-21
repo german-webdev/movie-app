@@ -28,10 +28,6 @@ class MovieCard extends Component {
     };
   }
 
-  componentDidMount() {
-    this.getSessionId();
-  }
-
   onClickCard() {
     return this.state.currentMovieId;
   }

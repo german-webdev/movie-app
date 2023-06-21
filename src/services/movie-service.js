@@ -51,7 +51,7 @@ export default class MovieService {
 
   async getGuestSessionId() {
     const id = await this.createGuestSession();
-    return this._toLocalSessionIdInfo(id);
+    return this._toLocalSessionId(id);
   }
 
   async getRequestToken() {
@@ -78,13 +78,33 @@ export default class MovieService {
     return await res.json();
   }
 
+  async requestRatedMovie() {
+    const sessionId = localStorage.getItem('id');
+    const url = `${this._apiBase}guest_session/${sessionId}/rated/movies?${this._apiKey}&language=en-US&page=1&sort_by=created_at.asc`;
+    const res = await fetch(`${url}`);
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${url}, received ${res.status}`);
+    }
+    return await res.json();
+  }
+
   async getMovies(value, page) {
     const movie = await this.getResource('search/movie', value, page);
     return movie.results.map((item) => this._transformMovie(item));
   }
 
-  async getTotalResults(value) {
+  async getRatedMovie() {
+    const movie = await this.requestRatedMovie();
+    return movie.results.map((item) => this._transformMovie(item));
+  }
+
+  async getTotalMovies(value) {
     const totalResults = await this.getResource('search/movie', value);
+    return this._transformPage(totalResults);
+  }
+
+  async getTotalRatedMovies() {
+    const totalResults = await this.requestRatedMovie();
     return this._transformPage(totalResults);
   }
 
@@ -93,7 +113,7 @@ export default class MovieService {
     return genresArr.genres.map((item) => this._transformGenresArr(item));
   }
 
-  _toLocalSessionIdInfo(id) {
+  _toLocalSessionId(id) {
     localStorage.setItem('success', id.success);
     localStorage.setItem('time', id.expires_at);
     localStorage.setItem('id', id.guest_session_id);
