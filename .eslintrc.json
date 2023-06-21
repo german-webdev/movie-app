@@ -25,6 +25,7 @@
     "plugins": ["react", "prettier", "import", "jsx-a11y"],
     "rules": {
         "no-tabs": 0,
+        "no-underscore-dangle":  0,
         "indent": [0, "tab"],
         "prettier/prettier": [2, { "endOfLine": "auto" }],
         "linebreak-style": [0, "unix"],

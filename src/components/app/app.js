@@ -1,25 +1,14 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable prefer-rest-params */
-/* eslint-disable func-names */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable import/order */
-/* eslint-disable react/no-unused-class-component-methods */
-/* eslint-disable react/no-unused-state */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable react/function-component-definition */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable guard-for-in */
 import React, { Component } from 'react';
-import { MovieServiceProvider, MovieServiceConsumer } from '../movie-service-context/movie-service-context';
+
+import { MovieServiceProvider } from '../movie-service-context/movie-service-context';
 import MovieList from '../movie-list';
 import Tab from '../tabs';
-
-import './app.css';
 import MovieService from '../../services/movie-service';
 import ErrorIndicator from '../error-indicator/error-indicator';
 import Spinner from '../spinner';
 import MyPagination from '../pagination';
+
+import './app.css';
 
 class App extends Component {
   service = new MovieService();
@@ -28,21 +17,13 @@ class App extends Component {
     super();
     this.state = {
       movies: [],
-      ratedMovie: [],
       viewRatedMovie: false,
-      genreName: [],
       loading: false,
-      searchTerm: 'Return',
+      searchTerm: '',
 
       totalResults: 0,
       currentPage: 1,
     };
-
-    // this.stateSetter = (state) => {
-    //   this.setState({
-    //     state,
-    //   });
-    // };
 
     this.getNameGenres = (movies) => {
       return movies.map((movie) => {
@@ -82,7 +63,7 @@ class App extends Component {
       };
     };
 
-    this.onError = (error) => {
+    this.onError = () => {
       this.setState({
         error: true,
         loading: false,
@@ -94,6 +75,14 @@ class App extends Component {
         loading: true,
         searchTerm: event.target.value,
       });
+    };
+
+    this.getGenresArr = (genres) => {
+      this.setState({ genres });
+    };
+
+    this.getTotal = (totalResults) => {
+      this.setState({ totalResults });
     };
 
     this.getArr = () => {
@@ -116,45 +105,47 @@ class App extends Component {
         this.service.getTotalMovies(this.state.searchTerm).then(this.getTotal);
       } else {
         this.service.getRatedMovie().then(this.onMovieLoaded).catch(this.onError);
+        this.setState({
+          loading: true,
+        });
         this.service.getTotalRatedMovies().then(this.getTotal);
       }
     }
   }
 
-  // stateSetter = (state) => {
-  //   this.setState({
-  //     state,
-  //   });
-  // };
+  componentWillUnmount() {
+    this.onMovieLoaded = (movies) => {
+      this.setState({
+        movies: this.getNameGenres(movies),
+        loading: false,
+      });
+    };
+  }
 
   render() {
-    const { movies, loading, error, totalResults, currentPage, searchTerm } = this.state;
+    const { movies, loading, error, totalResults, currentPage, searchTerm, viewRatedMovie } = this.state;
 
     const hasData = !(loading || error);
 
     const errorMessage = error ? <ErrorIndicator /> : null;
     const spinner = loading ? <Spinner /> : null;
     const content = hasData ? <MovieList movies={movies} /> : null;
+    const pagination = viewRatedMovie ? null : (
+      <MyPagination totalResults={totalResults} currentPage={currentPage} nextPage={this.nextPage} />
+    );
 
     return (
       <MovieServiceProvider value={this.service}>
         <div className="wrapper">
-          <header className="Header">
-            <Tab
-              onHandleSubmit={this.handleSubmit}
-              onHandleChange={this.handleChange}
-              searchTerm={searchTerm}
-              onToggleTab={this.onToggleTab}
-            />
+          <header className="header">
+            <Tab onHandleSubmit={this.handleSubmit} searchTerm={searchTerm} onToggleTab={this.onToggleTab} />
           </header>
           <main className="main">
             {errorMessage}
             {spinner}
             {content}
           </main>
-          <footer className="footer">
-            <MyPagination totalResults={totalResults} currentPage={currentPage} nextPage={this.nextPage} />
-          </footer>
+          <footer className="footer">{pagination}</footer>
         </div>
       </MovieServiceProvider>
     );

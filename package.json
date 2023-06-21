@@ -6,14 +6,12 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "antd": "^5.6.1",
+    "antd": "^5.6.2",
     "date-fns": "^2.30.0",
-    "install": "^0.13.0",
     "lodash": "^4.17.21",
-    "npm": "^9.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -44,6 +42,11 @@
       "last 1 safari version"
     ]
   },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
     "eslint": "^8.43.0",
     "eslint-config-airbnb": "^19.0.4",

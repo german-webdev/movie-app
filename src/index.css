@@ -4,4 +4,11 @@
 
   box-sizing: border-box;
   font-family: 'Inter';
+
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+}
+
+*::-webkit-scrollbar { 
+  width: 0; 
 }

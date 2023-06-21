@@ -1,7 +1,3 @@
-/* eslint-disable react/no-unused-state */
-/* eslint-disable array-callback-return */
-/* eslint-disable no-return-assign */
-/* eslint-disable react/jsx-fragments */
 import React, { Fragment, Component } from 'react';
 import { Rate } from 'antd';
 
@@ -16,7 +12,7 @@ class MovieCard extends Component {
     this.state = {
       rate: this.props.rate,
       currentMovieId: this.props.id,
-      stars: 0,
+      stars: this.props.rating,
     };
 
     this.onChangeStarValue = (stars) => {
@@ -47,7 +43,7 @@ class MovieCard extends Component {
     }
 
     return (
-      <Fragment>
+      <>
         <div className="left-part">
           <div className="image-box">
             <img className="card-img" src={image} alt="poster" />
@@ -84,7 +80,7 @@ class MovieCard extends Component {
             />
           </div>
         </div>
-      </Fragment>
+      </>
     );
   }
 }

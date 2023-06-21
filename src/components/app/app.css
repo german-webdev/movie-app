@@ -1,8 +1,11 @@
 .wrapper {
   
   max-width: 1010px;
-  
   margin: 0 auto;
+}
+
+.header {
+  padding: 0 36px;
 }
 
 .footer {

@@ -59,7 +59,7 @@ export default class MovieService {
     return this._transformToken(token);
   }
 
-  async getResource(url, value = 'return', page = 1) {
+  async getResource(url, value, page = 1) {
     const res = await fetch(`${this._apiBase}${url}?${this._apiKey}&query=${value}&page=${page}`);
 
     if (!res.ok) {
@@ -95,7 +95,7 @@ export default class MovieService {
 
   async getRatedMovie() {
     const movie = await this.requestRatedMovie();
-    return movie.results.map((item) => this._transformMovie(item));
+    return movie.results.map((item) => this._transformMovie(item), this.getRating);
   }
 
   async getTotalMovies(value) {
@@ -160,10 +160,11 @@ export default class MovieService {
   _transformMovie = (movie) => {
     return {
       date: movie.release_date ? this._transformDate(movie.release_date) : '',
-      description: movie.overview ? this._textCutter(movie.overview, 150) : '',
+      description: movie.overview ? this._textCutter(movie.overview, 150) : 'No overview',
       id: movie.id ? movie.id : '',
       image: this._getPoster(movie.poster_path),
       rate: movie.vote_average ? this._roundRate(movie.vote_average) : '0.0',
+      rating: movie.rating,
       title: movie.title ? this._textCutter(movie.title, 35) : '',
       genresIds: movie.genre_ids,
     };
