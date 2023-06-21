@@ -8,29 +8,11 @@ import { format } from 'date-fns';
 export default class MovieService {
   _apiBase = 'https://api.themoviedb.org/3/';
 
-  _apiKey = '4029bbd50282fba9b344e7c00decf6d1';
-
-  GET_OPTIONS = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      // Authorization:
-      //   'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MDI5YmJkNTAyODJmYmE5YjM0NGU3YzAwZGVjZjZkMSIsInN1YiI6IjY0ODU4ZDkwOTkyNTljMDBlMmY1NTQwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MrM0rvXnzXECKbYj-jD0JFZ9ZXT9SqMvwX3gF72jNYA',
-    },
-  };
-
-  POST_OPTIONS = {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      // Authorization:
-      // 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MDI5YmJkNTAyODJmYmE5YjM0NGU3YzAwZGVjZjZkMSIsInN1YiI6IjY0ODU4ZDkwOTkyNTljMDBlMmY1NTQwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.MrM0rvXnzXECKbYj-jD0JFZ9ZXT9SqMvwX3gF72jNYA',
-    },
-  };
+  _apiKey = 'api_key=4029bbd50282fba9b344e7c00decf6d1';
 
   async createGuestSession() {
     const url = 'authentication/guest_session/new';
-    const res = await fetch(`${this._apiBase}${url}?api_key=${this._apiKey}`, this.GET_OPTIONS);
+    const res = await fetch(`${this._apiBase}${url}?${this._apiKey}`);
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -40,7 +22,7 @@ export default class MovieService {
 
   async createRequestToken() {
     const url = 'authentication/token/new';
-    const res = await fetch(`${this._apiBase}${url}?api_key=${this._apiKey}`, this.GET_OPTIONS);
+    const res = await fetch(`${this._apiBase}${url}?${this._apiKey}`);
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -49,7 +31,8 @@ export default class MovieService {
   }
 
   async addRating(movieId, value, sessionId) {
-    const url = `${this._apiBase}movie/${movieId}/rating?api_key=${this._apiKey}&guest_session_id=${sessionId}`;
+    sessionId = localStorage.getItem('id');
+    const url = `${this._apiBase}movie/${movieId}/rating?${this._apiKey}&guest_session_id=${sessionId}`;
 
     const POST_OPTIONS = {
       method: 'POST',
@@ -68,7 +51,7 @@ export default class MovieService {
 
   async getGuestSessionId() {
     const id = await this.createGuestSession();
-    return this._transformId(id);
+    return this._toLocalSessionId(id);
   }
 
   async getRequestToken() {
@@ -77,10 +60,7 @@ export default class MovieService {
   }
 
   async getResource(url, value = 'return', page = 1) {
-    const res = await fetch(
-      `${this._apiBase}${url}?api_key=${this._apiKey}&query=${value}&page=${page}`,
-      this.GET_OPTIONS
-    );
+    const res = await fetch(`${this._apiBase}${url}?${this._apiKey}&query=${value}&page=${page}`);
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -90,7 +70,17 @@ export default class MovieService {
 
   async getAllGenres() {
     const url = 'genre/movie/list';
-    const res = await fetch(`${this._apiBase}${url}?api_key=${this._apiKey}&language=en`, this.GET_OPTIONS);
+    const res = await fetch(`${this._apiBase}${url}?${this._apiKey}&language=en`);
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${url}, received ${res.status}`);
+    }
+    return await res.json();
+  }
+
+  async requestRatedMovie() {
+    const sessionId = localStorage.getItem('id');
+    const url = `${this._apiBase}guest_session/${sessionId}/rated/movies?${this._apiKey}&language=en-US&page=1&sort_by=created_at.asc`;
+    const res = await fetch(`${url}`);
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
     }
@@ -102,23 +92,30 @@ export default class MovieService {
     return movie.results.map((item) => this._transformMovie(item));
   }
 
-  async getTotalResults(value) {
+  async getRatedMovie() {
+    const movie = await this.requestRatedMovie();
+    return movie.results.map((item) => this._transformMovie(item));
+  }
+
+  async getTotalMovies(value) {
     const totalResults = await this.getResource('search/movie', value);
     return this._transformPage(totalResults);
   }
 
+  async getTotalRatedMovies() {
+    const totalResults = await this.requestRatedMovie();
+    return this._transformPage(totalResults);
+  }
+
   async getGenres() {
-    fetch(`https://api.themoviedb.org/3/authentication?api_key=${this._apiKey}`, this.GET_OPTIONS);
     const genresArr = await this.getAllGenres();
     return genresArr.genres.map((item) => this._transformGenresArr(item));
   }
 
-  _transformId(id) {
-    return {
-      success: id.success,
-      time: id.expires_at,
-      id: id.guest_session_id,
-    };
+  _toLocalSessionId(id) {
+    localStorage.setItem('success', id.success);
+    localStorage.setItem('time', id.expires_at);
+    localStorage.setItem('id', id.guest_session_id);
   }
 
   _transformToken(token) {

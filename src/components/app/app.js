@@ -28,6 +28,8 @@ class App extends Component {
     super();
     this.state = {
       movies: [],
+      ratedMovie: [],
+      viewRatedMovie: false,
       genreName: [],
       loading: false,
       searchTerm: 'Return',
@@ -35,6 +37,12 @@ class App extends Component {
       totalResults: 0,
       currentPage: 1,
     };
+
+    // this.stateSetter = (state) => {
+    //   this.setState({
+    //     state,
+    //   });
+    // };
 
     this.getNameGenres = (movies) => {
       return movies.map((movie) => {
@@ -49,8 +57,13 @@ class App extends Component {
     };
 
     this.nextPage = (pageNumber) => {
-      this.service.getMovies(this.state.searchTerm, pageNumber).then(this.onMovieLoaded).catch(this.onError);
-      this.saveCurrentPage(pageNumber);
+      if (this.state.viewRatedMovie === false) {
+        this.service.getMovies(this.state.searchTerm, pageNumber).then(this.onMovieLoaded).catch(this.onError);
+        this.saveCurrentPage(pageNumber);
+      } else {
+        this.service.getRatedMovie().then(this.onMovieLoaded).catch(this.onError);
+        this.saveCurrentPage(pageNumber);
+      }
     };
 
     this.saveCurrentPage = (pageNumber) => {
@@ -98,12 +111,25 @@ class App extends Component {
     this.getArr = () => {
       this.service.getGenres().then(this.getGenresArr);
     };
+
+    this.onToggleTab = () => {
+      this.setState(({ viewRatedMovie }) => {
+        return {
+          viewRatedMovie: !viewRatedMovie,
+        };
+      });
+    };
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.searchTerm !== prevState.searchTerm) {
-      this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
-      this.service.getTotalResults(this.state.searchTerm).then(this.getTotal);
+    if (this.state.searchTerm !== prevState.searchTerm || this.state.viewRatedMovie !== prevState.viewRatedMovie) {
+      if (this.state.viewRatedMovie === false) {
+        this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
+        this.service.getTotalMovies(this.state.searchTerm).then(this.getTotal);
+      } else {
+        this.service.getRatedMovie().then(this.onMovieLoaded).catch(this.onError);
+        this.service.getTotalRatedMovies().then(this.getTotal);
+      }
     }
   }
 
@@ -120,7 +146,12 @@ class App extends Component {
       <MovieServiceProvider value={this.service}>
         <div className="wrapper">
           <header className="Header">
-            <Tab onHandleSubmit={this.handleSubmit} onHandleChange={this.handleChange} searchTerm={searchTerm} />
+            <Tab
+              onHandleSubmit={this.handleSubmit}
+              onHandleChange={this.handleChange}
+              searchTerm={searchTerm}
+              onToggleTab={this.onToggleTab}
+            />
           </header>
           <main className="main">
             {errorMessage}

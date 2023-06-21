@@ -6,7 +6,7 @@ import SearchArea from '../search-area';
 
 import './tabs.css';
 
-const Tab = ({ onHandleSubmit, searchTerm, onHandleChange }) => {
+const Tab = ({ onHandleSubmit, searchTerm, onHandleChange, onToggleTab }) => {
   const items = [
     {
       key: '1',
@@ -20,7 +20,16 @@ const Tab = ({ onHandleSubmit, searchTerm, onHandleChange }) => {
     },
   ];
 
-  return <Tabs className="tabs" defaultActiveKey="1" items={items} centered="true" size="middle" />;
+  return (
+    <Tabs
+      className="tabs"
+      defaultActiveKey="1"
+      items={items}
+      centered="true"
+      size="middle"
+      onChange={() => onToggleTab()}
+    />
+  );
 };
 
 export default Tab;

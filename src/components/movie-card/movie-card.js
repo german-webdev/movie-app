@@ -19,27 +19,13 @@ class MovieCard extends Component {
       stars: 0,
     };
 
-    this.getStateSessionId = (idSessionInfo) => {
-      this.setState({
-        idSessionInfo,
-      });
-    };
-
     this.onChangeStarValue = (stars) => {
       this.setState({
         stars,
       });
       this.onClickCard();
-      this.service.addRating(this.state.currentMovieId, stars, this.state.idSessionInfo.id);
+      this.service.addRating(this.state.currentMovieId, stars);
     };
-
-    this.getSessionId = () => {
-      this.service.getGuestSessionId().then(this.getStateSessionId);
-    };
-  }
-
-  componentDidMount() {
-    this.getSessionId();
   }
 
   onClickCard() {
