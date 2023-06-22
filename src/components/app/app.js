@@ -17,6 +17,7 @@ class App extends Component {
     super();
     this.state = {
       movies: [],
+      ratedMovie: [],
       viewRatedMovie: false,
       loading: false,
       searchTerm: '',
@@ -25,8 +26,9 @@ class App extends Component {
       currentPage: 1,
     };
 
-    this.getNameGenres = (movies) => {
+    this.updateStateMovies = (movies) => {
       return movies.map((movie) => {
+        movie.rating = this.state.ratedMovie.filter((card) => (card.id === movie.id ? card.rating : 10));
         movie.genresIds = movie.genresIds.map((genreId) => {
           return {
             id: genreId,
@@ -51,9 +53,15 @@ class App extends Component {
     this.componentDidMount = () => {
       this.service.getGuestSessionId();
       this.getArr();
+      this.onRatedMovieLoaded = (ratedMovie) => {
+        this.setState({
+          ratedMovie,
+          loading: false,
+        });
+      };
       this.onMovieLoaded = (movies) => {
         this.setState({
-          movies: this.getNameGenres(movies),
+          movies: this.updateStateMovies(movies),
           loading: false,
         });
       };
@@ -100,11 +108,10 @@ class App extends Component {
         this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
         this.service.getTotalMovies(this.state.searchTerm).then(this.getTotal);
       } else {
-        this.service.getRatedMovie().then(this.onMovieLoaded).catch(this.onError);
+        this.service.getRatedMovie().then(this.onRatedMovieLoaded).catch(this.onError);
         this.setState({
           loading: true,
         });
-        this.service.getTotalRatedMovies().then(this.getTotal);
       }
     }
   }
@@ -119,13 +126,15 @@ class App extends Component {
   }
 
   render() {
-    const { movies, loading, error, totalResults, currentPage, searchTerm, viewRatedMovie } = this.state;
+    const { movies, ratedMovie, loading, error, totalResults, currentPage, searchTerm, viewRatedMovie } = this.state;
 
     const hasData = !(loading || error);
 
     const errorMessage = error ? <ErrorIndicator /> : null;
     const spinner = loading ? <Spinner /> : null;
-    const content = hasData ? <MovieList movies={movies} /> : null;
+    const content = hasData ? (
+      <MovieList movies={movies} ratedMovie={ratedMovie} viewRatedMovie={viewRatedMovie} />
+    ) : null;
     const pagination = viewRatedMovie ? null : (
       <MyPagination totalResults={totalResults} currentPage={currentPage} nextPage={this.nextPage} />
     );

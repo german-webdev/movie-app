@@ -10,6 +10,8 @@ export default class MovieService {
 
   _apiKey = 'api_key=4029bbd50282fba9b344e7c00decf6d1';
 
+  sessionId = localStorage.getItem('sessionId');
+
   async createGuestSession() {
     const url = 'authentication/guest_session/new';
     const res = await fetch(`${this._apiBase}${url}?${this._apiKey}`);
@@ -35,9 +37,8 @@ export default class MovieService {
     return await res.json();
   }
 
-  async addRating(movieId, value, sessionId) {
-    sessionId = localStorage.getItem('id');
-    const url = `${this._apiBase}movie/${movieId}/rating?${this._apiKey}&guest_session_id=${sessionId}`;
+  async addRating(movieId, value) {
+    const url = `${this._apiBase}movie/${movieId}/rating?${this._apiKey}&guest_session_id=${this.sessionId}`;
 
     const POST_OPTIONS = {
       method: 'POST',
@@ -79,8 +80,7 @@ export default class MovieService {
   }
 
   async requestRatedMovie() {
-    const sessionId = localStorage.getItem('sessionId');
-    const url = `${this._apiBase}guest_session/${sessionId}/rated/movies?${this._apiKey}&language=en-US&page=1&sort_by=created_at.asc`;
+    const url = `${this._apiBase}guest_session/${this.sessionId}/rated/movies?${this._apiKey}&language=en-US&page=1&sort_by=created_at.asc`;
     const res = await fetch(`${url}`);
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -100,11 +100,6 @@ export default class MovieService {
 
   async getTotalMovies(value) {
     const totalResults = await this.getResource('search/movie', value);
-    return this._transformPage(totalResults);
-  }
-
-  async getTotalRatedMovies() {
-    const totalResults = await this.requestRatedMovie();
     return this._transformPage(totalResults);
   }
 

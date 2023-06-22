@@ -4,8 +4,9 @@ import MovieCard from '../movie-card';
 
 import './movie-list.css';
 
-const MovieList = ({ movies }) => {
-  const movie = movies.map((item) => {
+const MovieList = ({ movies, ratedMovie, viewRatedMovie }) => {
+  const movieList = !viewRatedMovie ? movies : ratedMovie;
+  const movie = movieList.map((item) => {
     const { id, rate, ...movieProps } = item;
 
     return (
