@@ -54,6 +54,7 @@ class App extends Component {
     };
 
     this.componentDidMount = () => {
+      this.service.getGuestSessionId();
       this.getArr();
       this.onMovieLoaded = (movies) => {
         this.setState({
