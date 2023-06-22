@@ -6,9 +6,17 @@
 
 .card {
   display: flex;
-  width: 454px;
-  height: 281px;
-  margin-bottom: 32px;
+  max-width: 454px;
+  min-height: 281px;
+  margin-bottom: 20px;
 
   box-shadow: 3px 5px 20px -3px #c5c1c1;
+}
+
+@media (max-width: 768px) {
+  .card {
+    max-width: 387px;
+    min-height: 245px;
+    padding: 6px 10px;
+  }
 }

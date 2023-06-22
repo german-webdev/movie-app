@@ -38,7 +38,8 @@ export default class MovieService {
   }
 
   async addRating(movieId, value) {
-    const url = `${this._apiBase}movie/${movieId}/rating?${this._apiKey}&guest_session_id=${this.sessionId}`;
+    const guestSessionId = localStorage.getItem('sessionId');
+    const url = `${this._apiBase}movie/${movieId}/rating?guest_session_id=${guestSessionId}&${this._apiKey}`;
 
     const POST_OPTIONS = {
       method: 'POST',
@@ -46,7 +47,7 @@ export default class MovieService {
         accept: 'application/json',
         'Content-Type': 'application/json;charset=utf-8',
       },
-      body: `{"value":${value}}`,
+      body: JSON.stringify({ value }),
     };
     const res = await fetch(url, POST_OPTIONS);
 
@@ -70,9 +71,8 @@ export default class MovieService {
   }
 
   async getAllGenres() {
-    await fetch(`https://api.themoviedb.org/3/authentication?${this._apiKey}`);
-    const url = 'genre/movie/list';
-    const res = await fetch(`${this._apiBase}${url}?${this._apiKey}&language=en`);
+    const url = `${this._apiBase}genre/movie/list?${this._apiKey}&language=en`;
+    const res = await fetch(`${url}`);
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
     }
@@ -80,7 +80,8 @@ export default class MovieService {
   }
 
   async requestRatedMovie() {
-    const url = `${this._apiBase}guest_session/${this.sessionId}/rated/movies?${this._apiKey}&language=en-US&page=1&sort_by=created_at.asc`;
+    const guestSessionId = localStorage.getItem('sessionId');
+    const url = `${this._apiBase}guest_session/${guestSessionId}/rated/movies?${this._apiKey}`;
     const res = await fetch(`${url}`);
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -161,7 +162,7 @@ export default class MovieService {
       rate: movie.vote_average ? this._roundRate(movie.vote_average) : '0.0',
       rating: movie.rating,
       title: movie.title ? this._textCutter(movie.title, 35) : '',
-      genresIds: movie.genre_ids,
+      genresIds: movie.genre_ids ? movie.genre_ids : 'Genre not specified',
     };
   };
 

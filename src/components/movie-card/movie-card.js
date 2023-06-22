@@ -50,13 +50,11 @@ class MovieCard extends Component {
           </div>
         </div>
         <div className="right-part">
-          <div className="card-content">
-            <div className="card-header">
-              <h1 className="card-header__title">{title}</h1>
-              <span className={classRate}>
-                <span className="card-header__rate-val">{rate}</span>
-              </span>
-            </div>
+          <div className="card-header">
+            <h1 className="card-header__title">{title}</h1>
+            <span className={classRate}>
+              <span className="card-header__rate-val">{rate}</span>
+            </span>
             <div className="movie-date">{date}</div>
             <div className="movie-genre">
               {genresIds?.map((genre) => (
@@ -65,6 +63,8 @@ class MovieCard extends Component {
                 </span>
               ))}
             </div>
+          </div>
+          <div className="card-content">
             <div className="movie-description">
               <p>{description}</p>
             </div>

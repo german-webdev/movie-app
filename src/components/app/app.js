@@ -27,14 +27,10 @@ class App extends Component {
     };
 
     this.updateStateMovies = (movies) => {
-      return movies.map((movie) => {
-        movie.rating = this.state.ratedMovie.filter((card) => (card.id === movie.id ? card.rating : 10));
-        movie.genresIds = movie.genresIds.map((genreId) => {
-          return {
-            id: genreId,
-            name: this.state.genres.filter((genre) => genre.id === genreId)[0].name,
-          };
-        });
+      const { ratedMovie, genres } = this.state;
+      return movies?.map((movie) => {
+        movie.rating = movie.rating ? movie.rating : ratedMovie.filter(({ id }) => id === movie.id)[0]?.rating || 0;
+        movie.genresIds = movie.genresIds.map((id) => genres.filter((genre) => id === genre.id)[0] || id);
         return movie;
       });
     };
@@ -55,7 +51,7 @@ class App extends Component {
       this.getArr();
       this.onRatedMovieLoaded = (ratedMovie) => {
         this.setState({
-          ratedMovie,
+          ratedMovie: this.updateStateMovies(ratedMovie),
           loading: false,
         });
       };

@@ -1,5 +1,4 @@
 .wrapper {
-  
   max-width: 1010px;
   margin: 0 auto;
 }
@@ -11,4 +10,14 @@
 .footer {
   text-align: center;
   margin: 10px auto 20px;
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    max-width: 768px;
+  }
+
+  .header {
+    padding: 0 16px;
+  }
 }
