@@ -20,6 +20,11 @@ export default class MovieService {
     return await res.json();
   }
 
+  async getGuestSessionId() {
+    const id = await this.createGuestSession();
+    return this._toLocalSessionId(id);
+  }
+
   async createRequestToken() {
     const url = 'authentication/token/new';
     const res = await fetch(`${this._apiBase}${url}?${this._apiKey}`);
@@ -49,11 +54,6 @@ export default class MovieService {
     }
   }
 
-  async getGuestSessionId() {
-    const id = await this.createGuestSession();
-    return this._toLocalSessionId(id);
-  }
-
   async getRequestToken() {
     const token = await this.createRequestToken();
     return this._transformToken(token);
@@ -79,7 +79,7 @@ export default class MovieService {
   }
 
   async requestRatedMovie() {
-    const sessionId = localStorage.getItem('id');
+    const sessionId = localStorage.getItem('sessionId');
     const url = `${this._apiBase}guest_session/${sessionId}/rated/movies?${this._apiKey}&language=en-US&page=1&sort_by=created_at.asc`;
     const res = await fetch(`${url}`);
     if (!res.ok) {
@@ -116,7 +116,7 @@ export default class MovieService {
   _toLocalSessionId(id) {
     localStorage.setItem('success', id.success);
     localStorage.setItem('time', id.expires_at);
-    localStorage.setItem('id', id.guest_session_id);
+    localStorage.setItem('sessionId', id.guest_session_id);
   }
 
   _transformToken(token) {

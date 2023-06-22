@@ -38,13 +38,8 @@ class App extends Component {
     };
 
     this.nextPage = (pageNumber) => {
-      if (this.state.viewRatedMovie === false) {
-        this.service.getMovies(this.state.searchTerm, pageNumber).then(this.onMovieLoaded).catch(this.onError);
-        this.saveCurrentPage(pageNumber);
-      } else {
-        this.service.getRatedMovie().then(this.onMovieLoaded).catch(this.onError);
-        this.saveCurrentPage(pageNumber);
-      }
+      this.service.getMovies(this.state.searchTerm, pageNumber).then(this.onMovieLoaded).catch(this.onError);
+      this.saveCurrentPage(pageNumber);
     };
 
     this.saveCurrentPage = (pageNumber) => {
