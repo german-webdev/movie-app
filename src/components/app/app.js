@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Empty } from 'antd';
 
 import { MovieServiceProvider } from '../movie-service-context/movie-service-context';
 import MovieList from '../movie-list';
@@ -22,7 +23,7 @@ class App extends Component {
       loading: false,
       searchTerm: '',
 
-      totalResults: 0,
+      totalResults: null,
       currentPage: 1,
     };
 
@@ -48,7 +49,7 @@ class App extends Component {
 
     this.componentDidMount = () => {
       this.service.getGuestSessionId();
-      this.getArr();
+      this.getGenresArray();
       this.onRatedMovieLoaded = (ratedMovie) => {
         this.setState({
           ratedMovie: this.updateStateMovies(ratedMovie),
@@ -77,16 +78,15 @@ class App extends Component {
       });
     };
 
-    this.getGenresArr = (genres) => {
-      this.setState({ genres });
-    };
-
-    this.getTotal = (totalResults) => {
+    this.getTotalResults = (totalResults) => {
       this.setState({ totalResults });
     };
 
-    this.getArr = () => {
-      this.service.getGenres().then(this.getGenresArr);
+    this.getGenresArray = () => {
+      this.toStateGenres = (genres) => {
+        this.setState({ genres });
+      };
+      this.service.getGenres().then(this.toStateGenres);
     };
 
     this.onToggleTab = () => {
@@ -102,7 +102,7 @@ class App extends Component {
     if (this.state.searchTerm !== prevState.searchTerm || this.state.viewRatedMovie !== prevState.viewRatedMovie) {
       if (this.state.viewRatedMovie === false) {
         this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
-        this.service.getTotalMovies(this.state.searchTerm).then(this.getTotal);
+        this.service.getTotalMovies(this.state.searchTerm).then(this.getTotalResults);
       } else {
         this.service.getRatedMovie().then(this.onRatedMovieLoaded).catch(this.onError);
         this.setState({
@@ -110,15 +110,6 @@ class App extends Component {
         });
       }
     }
-  }
-
-  componentWillUnmount() {
-    this.onMovieLoaded = (movies) => {
-      this.setState({
-        movies: this.getNameGenres(movies),
-        loading: false,
-      });
-    };
   }
 
   render() {
@@ -131,6 +122,10 @@ class App extends Component {
     const content = hasData ? (
       <MovieList movies={movies} ratedMovie={ratedMovie} viewRatedMovie={viewRatedMovie} />
     ) : null;
+    const nothing =
+      (!movies.length && searchTerm.length && hasData) || (!ratedMovie.length && viewRatedMovie && hasData) ? (
+        <Empty description="Nothing was found" />
+      ) : null;
     const pagination = viewRatedMovie ? null : (
       <MyPagination totalResults={totalResults} currentPage={currentPage} nextPage={this.nextPage} />
     );
@@ -140,6 +135,7 @@ class App extends Component {
         <div className="wrapper">
           <header className="header">
             <Tab onHandleSubmit={this.handleSubmit} searchTerm={searchTerm} onToggleTab={this.onToggleTab} />
+            {nothing}
           </header>
           <main className="main">
             {errorMessage}

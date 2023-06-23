@@ -7,6 +7,12 @@
   padding: 0 36px;
 }
 
+.header__nothing {
+  left: 0;
+  top: -30px;
+  font-size: 14px;
+}
+
 .footer {
   text-align: center;
   margin: 10px auto 20px;

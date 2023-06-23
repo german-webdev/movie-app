@@ -16,9 +16,7 @@ class MovieCard extends Component {
     };
 
     this.onChangeStarValue = (stars) => {
-      this.setState({
-        stars,
-      });
+      this.setState({ stars });
       this.onClickCard();
       this.service.addRating(this.state.currentMovieId, stars);
     };

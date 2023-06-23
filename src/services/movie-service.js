@@ -38,8 +38,8 @@ export default class MovieService {
   }
 
   async addRating(movieId, value) {
-    const guestSessionId = localStorage.getItem('sessionId');
-    const url = `${this._apiBase}movie/${movieId}/rating?guest_session_id=${guestSessionId}&${this._apiKey}`;
+    // const guestSessionId = localStorage.getItem('sessionId');
+    const url = `${this._apiBase}movie/${movieId}/rating?guest_session_id=${this.sessionId}&${this._apiKey}`;
 
     const POST_OPTIONS = {
       method: 'POST',

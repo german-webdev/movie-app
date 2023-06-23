@@ -9,8 +9,16 @@
   max-width: 454px;
   min-height: 281px;
   margin-bottom: 20px;
+  cursor: pointer;
 
   box-shadow: 3px 5px 20px -3px #c5c1c1;
+  transition: transform .1s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 5px 7px 20px -3px #b1adad;
+  transform: scale(1.01);
+  transition: transform .1s ease-in-out;
 }
 
 @media (max-width: 768px) {
