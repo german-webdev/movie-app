@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
 import { Empty } from 'antd';
+import React, { Component } from 'react';
 
-import { MovieServiceProvider } from '../movie-service-context/movie-service-context';
-import MovieList from '../movie-list';
-import Tab from '../tabs';
 import MovieService from '../../services/movie-service';
 import ErrorIndicator from '../error-indicator/error-indicator';
-import Spinner from '../spinner';
+import MovieList from '../movie-list';
+import MovieServiceContext from '../movie-service-context';
 import MyPagination from '../pagination';
+import Spinner from '../spinner';
+import Tab from '../tabs';
 
 import './app.css';
 
@@ -28,10 +28,9 @@ class App extends Component {
     };
 
     this.updateStateMovies = (movies) => {
-      const { ratedMovie, genres } = this.state;
+      const { ratedMovie } = this.state;
       return movies?.map((movie) => {
         movie.rating = movie.rating ? movie.rating : ratedMovie.filter(({ id }) => id === movie.id)[0]?.rating || 0;
-        movie.genresIds = movie.genresIds.map((id) => genres.filter((genre) => id === genre.id)[0] || id);
         return movie;
       });
     };
@@ -113,7 +112,8 @@ class App extends Component {
   }
 
   render() {
-    const { movies, ratedMovie, loading, error, totalResults, currentPage, searchTerm, viewRatedMovie } = this.state;
+    const { movies, ratedMovie, loading, error, totalResults, currentPage, searchTerm, viewRatedMovie, genres } =
+      this.state;
 
     const hasData = !(loading || error);
 
@@ -131,7 +131,8 @@ class App extends Component {
     );
 
     return (
-      <MovieServiceProvider value={this.service}>
+      // eslint-disable-next-line react/jsx-no-constructed-context-values
+      <MovieServiceContext.Provider value={{ genres }}>
         <div className="wrapper">
           <header className="header">
             <Tab onHandleSubmit={this.handleSubmit} searchTerm={searchTerm} onToggleTab={this.onToggleTab} />
@@ -144,7 +145,7 @@ class App extends Component {
           </main>
           <footer className="footer">{pagination}</footer>
         </div>
-      </MovieServiceProvider>
+      </MovieServiceContext.Provider>
     );
   }
 }
