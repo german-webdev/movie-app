@@ -3,15 +3,21 @@
   border-bottom: none;
 }
 
-:where(.css-dev-only-do-not-override-1wazalj).ant-tabs-top >.ant-tabs-nav::before, :where(.css-dev-only-do-not-override-1wazalj).ant-tabs-top >div>.ant-tabs-nav::before {
+.ant-tabs-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
+.ant-tabs-top >.ant-tabs-nav::before {
   position: absolute;
   left: 50%;
   width: 170px;
-  border-bottom: 1px solid #dad5d5;
+  border-bottom: 1px solid #d8cece;
   transform: translateX(-50%);
 }
 
-:where(.css-dev-only-do-not-override-1wazalj).ant-tabs .ant-tabs-tab+.ant-tabs-tab {
+.ant-tabs .ant-tabs-tab+.ant-tabs-tab {
   margin: 0 0 0 5px;
 }
 

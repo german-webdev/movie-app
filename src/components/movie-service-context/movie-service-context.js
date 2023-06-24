@@ -1,5 +1,5 @@
 import React from 'react';
 
-const { Provider: MovieServiceProvider, Consumer: MovieServiceConsumer } = React.createContext();
+const MovieServiceContext = React.createContext();
 
-export { MovieServiceProvider, MovieServiceConsumer };
+export default MovieServiceContext;
