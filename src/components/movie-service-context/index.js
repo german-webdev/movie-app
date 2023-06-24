@@ -1,3 +1,3 @@
-import { MovieServiceProvider, MovieServiceConsumer } from './movie-service-context';
+import MovieServiceContext from './movie-service-context';
 
-export { MovieServiceProvider, MovieServiceConsumer };
+export default MovieServiceContext;

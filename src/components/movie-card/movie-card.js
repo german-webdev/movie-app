@@ -3,6 +3,7 @@ import { Rate } from 'antd';
 
 import './movie-card.css';
 import MovieService from '../../services/movie-service';
+import MovieServiceContext from '../movie-service-context';
 
 class MovieCard extends Component {
   service = new MovieService();
@@ -20,6 +21,16 @@ class MovieCard extends Component {
       this.onClickCard();
       this.service.addRating(this.state.currentMovieId, stars);
     };
+
+    this.renderGenresNamesByIds = (ids, genres) => {
+      return ids?.map((id) => {
+        return (
+          <span key={id} className="movie-genre__item">
+            {genres?.filter((genre) => id === genre.id)[0]?.name}
+          </span>
+        );
+      });
+    };
   }
 
   onClickCard() {
@@ -27,6 +38,7 @@ class MovieCard extends Component {
   }
 
   render() {
+    const { genres } = this.context;
     const { rate, stars } = this.state;
     const { title, image, date, description, genresIds } = this.props;
 
@@ -54,13 +66,7 @@ class MovieCard extends Component {
               <span className="card-header__rate-val">{rate}</span>
             </span>
             <div className="movie-date">{date}</div>
-            <div className="movie-genre">
-              {genresIds?.map((genre) => (
-                <span key={genre.id} className="movie-genre__item">
-                  {genre.name}
-                </span>
-              ))}
-            </div>
+            <div className="movie-genre">{this.renderGenresNamesByIds(genresIds, genres)}</div>
           </div>
           <div className="card-content">
             <div className="movie-description">
@@ -82,5 +88,7 @@ class MovieCard extends Component {
     );
   }
 }
+
+MovieCard.contextType = MovieServiceContext;
 
 export default MovieCard;
