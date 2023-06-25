@@ -1,8 +1,5 @@
-<<<<<<< HEAD
+
 #link to https://movie-app-nine-rouge.vercel.app
-=======
-#link to https://movie-app-nine-rouge.vercel.app 
->>>>>>> c2dbd38dbcdca79fce2657d249ffd9ee2c1b236e
 
 #movie-app
 
