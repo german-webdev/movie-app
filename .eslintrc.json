@@ -61,7 +61,8 @@
             ],
             "newlines-between": "always"
         }
-        ]
+        ],
+        "no-return-await": 0
     },
     "settings": {
         "import/resolver": {

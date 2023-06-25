@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import MovieCard from '../movie-card';
 
@@ -17,6 +18,12 @@ const MovieList = ({ movies, ratedMovie, viewRatedMovie }) => {
   });
 
   return <section className="movie-cards">{movie}</section>;
+};
+
+MovieList.propTypes = {
+  movies: PropTypes.instanceOf(Array).isRequired,
+  ratedMovie: PropTypes.instanceOf(Array).isRequired,
+  viewRatedMovie: PropTypes.bool.isRequired,
 };
 
 export default MovieList;

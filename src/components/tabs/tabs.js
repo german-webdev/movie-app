@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Tabs } from 'antd';
 
 import SearchArea from '../search-area';
@@ -29,6 +30,12 @@ const Tab = ({ onHandleSubmit, searchTerm, onToggleTab }) => {
       onChange={() => onToggleTab()}
     />
   );
+};
+
+Tab.propTypes = {
+  onHandleSubmit: PropTypes.func.isRequired,
+  searchTerm: PropTypes.string.isRequired,
+  onToggleTab: PropTypes.func.isRequired,
 };
 
 export default Tab;

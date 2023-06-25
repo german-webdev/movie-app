@@ -1,5 +1,6 @@
 import React, { Fragment, Component } from 'react';
 import { Rate } from 'antd';
+import PropTypes from 'prop-types';
 
 import './movie-card.css';
 import MovieService from '../../services/movie-service';
@@ -88,6 +89,17 @@ class MovieCard extends Component {
     );
   }
 }
+
+MovieCard.propTypes = {
+  id: PropTypes.number.isRequired,
+  rate: PropTypes.string.isRequired,
+  rating: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  genresIds: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
+};
 
 MovieCard.contextType = MovieServiceContext;
 
