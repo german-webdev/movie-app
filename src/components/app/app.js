@@ -124,7 +124,8 @@ class App extends Component {
       <MovieList movies={movies} ratedMovie={ratedMovie} viewRatedMovie={viewRatedMovie} />
     ) : null;
     const nothing =
-      (!movies.length && searchTerm.length && hasData) || (!ratedMovie.length && viewRatedMovie && hasData) ? (
+      (!movies.length && searchTerm.length && hasData && !viewRatedMovie) ||
+      (!ratedMovie.length && viewRatedMovie && hasData) ? (
         <Empty description="Nothing was found" />
       ) : null;
     const pagination = viewRatedMovie ? null : (

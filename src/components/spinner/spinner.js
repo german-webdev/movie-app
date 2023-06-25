@@ -11,8 +11,8 @@ const Spinner = () => {
         position: 'absolute',
         width: '100%',
         top: '40%',
-        left: '50%',
-        transform: 'translateX(-5.5%)',
+        left: '-50%',
+        transform: 'translateX(40%)',
       }}
     >
       <Space>
