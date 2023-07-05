@@ -47,23 +47,6 @@ class App extends Component {
       });
     };
 
-    this.componentDidMount = () => {
-      this.service.getGuestSessionId();
-      this.getGenresArray();
-      this.onRatedMovieLoaded = (ratedMovie) => {
-        this.setState({
-          ratedMovie: this.updateStateMovies(ratedMovie),
-          loading: false,
-        });
-      };
-      this.onMovieLoaded = (movies) => {
-        this.setState({
-          movies: this.updateStateMovies(movies),
-          loading: false,
-        });
-      };
-    };
-
     this.onError = () => {
       this.setState({
         error: true,
@@ -83,10 +66,9 @@ class App extends Component {
     };
 
     this.getGenresArray = () => {
-      this.toStateGenres = (genres) => {
+      this.service.getGenres().then((genres) => {
         this.setState({ genres });
-      };
-      this.service.getGenres().then(this.toStateGenres);
+      });
     };
 
     this.onToggleTab = () => {
@@ -94,6 +76,22 @@ class App extends Component {
         return {
           viewRatedMovie: !viewRatedMovie,
         };
+      });
+    };
+  }
+
+  componentDidMount() {
+    this.getGenresArray();
+    this.onRatedMovieLoaded = (ratedMovie) => {
+      this.setState({
+        ratedMovie: this.updateStateMovies(ratedMovie),
+        loading: false,
+      });
+    };
+    this.onMovieLoaded = (movies) => {
+      this.setState({
+        movies: this.updateStateMovies(movies),
+        loading: false,
       });
     };
   }
@@ -128,9 +126,10 @@ class App extends Component {
       (!ratedMovie.length && viewRatedMovie && hasData) ? (
         <Empty description="Nothing was found" />
       ) : null;
-    const pagination = viewRatedMovie ? null : (
-      <MyPagination totalResults={totalResults} currentPage={currentPage} nextPage={this.nextPage} />
-    );
+    const pagination =
+      viewRatedMovie || !hasData ? null : (
+        <MyPagination totalResults={totalResults} currentPage={currentPage} nextPage={this.nextPage} />
+      );
 
     return (
       <MovieServiceContext.Provider value={{ genres }}>

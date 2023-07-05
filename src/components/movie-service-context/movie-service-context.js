@@ -1,5 +1,6 @@
 import React from 'react';
 
-const MovieServiceContext = React.createContext();
+const defaultValue = null;
+const MovieServiceContext = React.createContext(defaultValue);
 
 export default MovieServiceContext;

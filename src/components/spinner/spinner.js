@@ -5,19 +5,10 @@ import './spinner.css';
 
 const Spinner = () => {
   return (
-    <Space
-      direction="horizontal"
-      style={{
-        position: 'absolute',
-        width: '100%',
-        top: '40%',
-        left: '-50%',
-        transform: 'translateX(40%)',
-      }}
-    >
+    <Space direction="horizontal">
       <Space>
         <Spin tip="Loading" size="large">
-          <div className="content" />
+          <div className="spinner" />
         </Spin>
       </Space>
     </Space>

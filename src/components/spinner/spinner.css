@@ -1,6 +1,6 @@
-.content {
+.spinner {
+  margin-top: 40px;
   padding: 50px;
-  margin: 0 auto;
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
+  background: rgba(255, 140, 63, 0.356);
+  border-radius: 20px;
 }
