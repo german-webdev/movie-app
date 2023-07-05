@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import React, { Component } from 'react';
 import { Empty } from 'antd';
+import _debounce from 'lodash/debounce';
 
 import MovieService from '../../services/movie-service';
 import ErrorIndicator from '../error-indicator/error-indicator';
@@ -23,7 +24,7 @@ class App extends Component {
       viewRatedMovie: false,
       loading: false,
       searchTerm: '',
-
+      searchValue: '',
       totalResults: null,
       currentPage: 1,
     };
@@ -54,11 +55,9 @@ class App extends Component {
       });
     };
 
-    this.handleSubmit = (event) => {
-      this.setState({
-        loading: true,
-        searchTerm: event.target.value,
-      });
+    this.handleSearchValueChange = (searchValue) => {
+      this.setState({ searchValue });
+      this.debounceSearchValue(searchValue);
     };
 
     this.getTotalResults = (totalResults) => {
@@ -81,6 +80,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.service.getGuestSessionId();
     this.getGenresArray();
     this.onRatedMovieLoaded = (ratedMovie) => {
       this.setState({
@@ -94,6 +94,12 @@ class App extends Component {
         loading: false,
       });
     };
+    this.debounceSearchValue = _debounce((searchValue) => {
+      this.setState({
+        loading: true,
+        searchTerm: searchValue,
+      });
+    }, 500);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -113,6 +119,7 @@ class App extends Component {
   render() {
     const { movies, ratedMovie, loading, error, totalResults, currentPage, searchTerm, viewRatedMovie, genres } =
       this.state;
+    const { searchValue } = this.state;
 
     const hasData = !(loading || error);
 
@@ -135,7 +142,7 @@ class App extends Component {
       <MovieServiceContext.Provider value={{ genres }}>
         <div className="wrapper">
           <header className="header">
-            <Tab onHandleSubmit={this.handleSubmit} searchTerm={searchTerm} onToggleTab={this.onToggleTab} />
+            <Tab onChange={this.handleSearchValueChange} searchValue={searchValue} onToggleTab={this.onToggleTab} />
             {nothing}
           </header>
           <main className="main">
