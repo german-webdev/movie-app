@@ -1,21 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _debounce from 'lodash/debounce';
 
 import './search-area.css';
 
-const SearchArea = ({ onHandleSubmit }) => {
-  const debounceOnChange = _debounce(onHandleSubmit, 500);
-
+const SearchArea = ({ onHandleSearchValueChange, searchValue }) => {
   return (
     <div className="search">
-      <input onChange={debounceOnChange} className="search-input" type="text" placeholder="Type to search..." />
+      <input
+        onChange={(event) => onHandleSearchValueChange(event.target.value)}
+        className="search-input"
+        type="text"
+        placeholder="Type to search..."
+        value={searchValue}
+      />
     </div>
   );
 };
 
 SearchArea.propTypes = {
-  onHandleSubmit: PropTypes.func.isRequired,
+  onHandleSearchValueChange: PropTypes.func.isRequired,
+  searchValue: PropTypes.string.isRequired,
 };
 
 export default SearchArea;

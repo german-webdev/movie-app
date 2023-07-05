@@ -6,12 +6,12 @@ import SearchArea from '../search-area';
 
 import './tabs.css';
 
-const Tab = ({ onHandleSubmit, searchTerm, onToggleTab }) => {
+const Tab = ({ onHandleSearchValueChange, searchValue, onToggleTab }) => {
   const items = [
     {
       key: '1',
       label: 'Search',
-      children: <SearchArea onHandleSubmit={onHandleSubmit} searchTerm={searchTerm} />,
+      children: <SearchArea onHandleSearchValueChange={onHandleSearchValueChange} searchValue={searchValue} />,
     },
     {
       key: '2',
@@ -33,8 +33,8 @@ const Tab = ({ onHandleSubmit, searchTerm, onToggleTab }) => {
 };
 
 Tab.propTypes = {
-  onHandleSubmit: PropTypes.func.isRequired,
-  searchTerm: PropTypes.string.isRequired,
+  onHandleSearchValueChange: PropTypes.func.isRequired,
+  searchValue: PropTypes.string.isRequired,
   onToggleTab: PropTypes.func.isRequired,
 };
 

@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 
->>>>>>> b8fe040f6ce66ea45fb3142edd4c1f6bb5face96
 #link to https://movie-app-nine-rouge.vercel.app
 
 #movie-app

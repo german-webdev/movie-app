@@ -1,8 +1,7 @@
 import React from 'react';
 import { Alert, Space } from 'antd';
-// import './error-indicator.css';
 
-const ErrorIndicator = () => {
+const OfflineIndicator = () => {
   return (
     <Space
       direction="vertical"
@@ -11,9 +10,9 @@ const ErrorIndicator = () => {
       }}
     >
       <Alert
-        banner="false"
-        message="Error"
-        description="Sorry, looks like something went wrong. Already fixing."
+        banner
+        message="No Internet Connection"
+        description="Please check your internet connection and try again."
         type="error"
         showIcon
       />
@@ -21,4 +20,4 @@ const ErrorIndicator = () => {
   );
 };
 
-export default ErrorIndicator;
+export default OfflineIndicator;

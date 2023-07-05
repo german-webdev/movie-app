@@ -1,9 +1,11 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import React, { Component } from 'react';
 import { Empty } from 'antd';
+import _debounce from 'lodash/debounce';
 
 import MovieService from '../../services/movie-service';
 import ErrorIndicator from '../error-indicator/error-indicator';
+import OfflineIndicator from '../offline-indicator';
 import MovieList from '../movie-list';
 import MovieServiceContext from '../movie-service-context';
 import MyPagination from '../pagination';
@@ -23,9 +25,11 @@ class App extends Component {
       viewRatedMovie: false,
       loading: false,
       searchTerm: '',
+      searchValue: '',
 
       totalResults: null,
       currentPage: 1,
+      offline: false,
     };
 
     this.updateStateMovies = (movies) => {
@@ -54,11 +58,14 @@ class App extends Component {
       });
     };
 
-    this.handleSubmit = (event) => {
-      this.setState({
-        loading: true,
-        searchTerm: event.target.value,
-      });
+    this.checkOfflineStatus = () => {
+      const offline = !navigator.onLine;
+      this.setState({ offline });
+    };
+
+    this.handleSearchValueChange = (searchValue) => {
+      this.setState({ searchValue });
+      this.debounceSearchValue(searchValue);
     };
 
     this.getTotalResults = (totalResults) => {
@@ -81,19 +88,34 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.getGenresArray();
-    this.onRatedMovieLoaded = (ratedMovie) => {
+    const storedRatedMovie = localStorage.getItem('ratedMovie');
+
+    if (storedRatedMovie) {
       this.setState({
-        ratedMovie: this.updateStateMovies(ratedMovie),
+        ratedMovie: this.updateStateMovies(JSON.parse(storedRatedMovie)),
         loading: false,
       });
-    };
+    }
+
     this.onMovieLoaded = (movies) => {
       this.setState({
         movies: this.updateStateMovies(movies),
         loading: false,
       });
     };
+
+    this.getGenresArray();
+
+    this.debounceSearchValue = _debounce((searchValue) => {
+      this.setState({
+        loading: true,
+        searchTerm: searchValue,
+      });
+    }, 500);
+
+    this.checkOfflineStatus();
+    window.addEventListener('offline', this.checkOfflineStatus);
+    window.addEventListener('online', this.checkOfflineStatus);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -108,15 +130,44 @@ class App extends Component {
         });
       }
     }
+
+    this.onRatedMovieLoaded = (ratedMovie) => {
+      this.setState(
+        {
+          ratedMovie: this.updateStateMovies(ratedMovie),
+          loading: false,
+        },
+        () => {
+          localStorage.setItem('ratedMovie', JSON.stringify(ratedMovie));
+        }
+      );
+    };
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('offline', this.checkOfflineStatus);
+    window.removeEventListener('online', this.checkOfflineStatus);
   }
 
   render() {
-    const { movies, ratedMovie, loading, error, totalResults, currentPage, searchTerm, viewRatedMovie, genres } =
-      this.state;
+    const {
+      movies,
+      ratedMovie,
+      loading,
+      error,
+      offline,
+      totalResults,
+      currentPage,
+      searchTerm,
+      viewRatedMovie,
+      genres,
+      searchValue,
+    } = this.state;
 
     const hasData = !(loading || error);
 
     const errorMessage = error ? <ErrorIndicator /> : null;
+    const offlineMessage = offline ? <OfflineIndicator /> : null;
     const spinner = loading ? <Spinner /> : null;
     const content = hasData ? (
       <MovieList movies={movies} ratedMovie={ratedMovie} viewRatedMovie={viewRatedMovie} />
@@ -135,11 +186,16 @@ class App extends Component {
       <MovieServiceContext.Provider value={{ genres }}>
         <div className="wrapper">
           <header className="header">
-            <Tab onHandleSubmit={this.handleSubmit} searchTerm={searchTerm} onToggleTab={this.onToggleTab} />
+            <Tab
+              onHandleSearchValueChange={this.handleSearchValueChange}
+              searchValue={searchValue}
+              onToggleTab={this.onToggleTab}
+            />
             {nothing}
           </header>
           <main className="main">
             {errorMessage}
+            {offlineMessage}
             {spinner}
             {content}
           </main>
