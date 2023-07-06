@@ -6,7 +6,7 @@
 
 .card {
   display: flex;
-  max-width: 454px;
+  min-width: 367px;
   min-height: 281px;
   margin-bottom: 20px;
   cursor: pointer;

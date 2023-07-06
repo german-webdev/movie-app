@@ -15,7 +15,7 @@ export default class MovieService {
 
     if (!storedSessionId) {
       this.createGuestSession().then((sessionId) => {
-        localStorage.setItem('sessionId', sessionId);
+        localStorage.setItem('sessionId', JSON.stringify(sessionId));
       });
     }
   }
@@ -43,8 +43,8 @@ export default class MovieService {
   }
 
   async addRating(movieId, value) {
-    const guestSessionId = localStorage.getItem('sessionId');
-    const url = `${this._apiBase}movie/${movieId}/rating?guest_session_id=${guestSessionId}&${this._apiKey}`;
+    const guestSession = JSON.parse(localStorage.getItem('sessionId'));
+    const url = `${this._apiBase}movie/${movieId}/rating?guest_session_id=${guestSession.guest_session_id}&${this._apiKey}`;
 
     const POST_OPTIONS = {
       method: 'POST',
@@ -85,8 +85,8 @@ export default class MovieService {
   }
 
   async requestRatedMovie() {
-    const guestSessionId = localStorage.getItem('sessionId');
-    const url = `${this._apiBase}guest_session/${guestSessionId}/rated/movies?${this._apiKey}`;
+    const guestSession = JSON.parse(localStorage.getItem('sessionId'));
+    const url = `${this._apiBase}guest_session/${guestSession.guest_session_id}/rated/movies?${this._apiKey}`;
     const res = await fetch(`${url}`);
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
