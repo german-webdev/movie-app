@@ -99,7 +99,7 @@ export default class MovieService {
 
   async getRatedMovie() {
     const movie = await this.requestRatedMovie();
-    return movie.results.map((item) => this._transformMovie(item), this.getRating);
+    return movie.results.map((item) => this._transformMovie(item));
   }
 
   async getTotalMovies(value) {
