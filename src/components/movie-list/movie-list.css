@@ -6,9 +6,8 @@
 
 .card {
   display: flex;
-  min-width: 367px;
-  min-height: 281px;
-  margin-bottom: 20px;
+  max-width: 451px;
+  margin-bottom: 34px;
   cursor: pointer;
 
   box-shadow: 3px 5px 20px -3px #c5c1c1;
@@ -23,8 +22,9 @@
 
 @media (max-width: 768px) {
   .card {
-    max-width: 387px;
+    width: 388px;
     min-height: 245px;
     padding: 6px 10px;
+    margin-bottom: 20px;
   }
 }

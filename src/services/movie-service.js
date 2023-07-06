@@ -20,8 +20,6 @@ export default class MovieService {
     }
   }
 
-  // sessionId = localStorage.getItem('sessionId');
-
   async createGuestSession() {
     const url = 'authentication/guest_session/new';
     const res = await fetch(`${this._apiBase}${url}?${this._apiKey}`);
@@ -155,7 +153,7 @@ export default class MovieService {
   _transformMovie = (movie) => {
     return {
       date: movie.release_date ? this._transformDate(movie.release_date) : '',
-      description: movie.overview ? this._textCutter(movie.overview, 150) : 'No overview',
+      description: movie.overview ? this._textCutter(movie.overview, 140) : 'No overview',
       id: movie.id ? movie.id : '',
       image: this._getPoster(movie.poster_path),
       rate: movie.vote_average ? this._roundRate(movie.vote_average) : '0.0',
