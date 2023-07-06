@@ -14,8 +14,8 @@ export default class MovieService {
     const storedSessionId = localStorage.getItem('sessionId');
 
     if (!storedSessionId) {
-      this.createGuestSession().then((sessionId) => {
-        localStorage.setItem('sessionId', sessionId);
+      this.createGuestSession().then(({ guest_session_id: guestSessionId }) => {
+        localStorage.setItem('sessionId', guestSessionId);
       });
     }
   }
