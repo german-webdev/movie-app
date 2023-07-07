@@ -126,7 +126,10 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.searchTerm !== prevState.searchTerm || this.state.viewRatedMovie !== prevState.viewRatedMovie) {
+    if (
+      (this.state.searchTerm !== prevState.searchTerm || this.state.viewRatedMovie !== prevState.viewRatedMovie) &&
+      !this.state.offline
+    ) {
       if (this.state.viewRatedMovie === false) {
         this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
         this.service.getTotalMovies(this.state.searchTerm).then(this.getTotalResults);
