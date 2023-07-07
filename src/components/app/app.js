@@ -127,7 +127,7 @@ class App extends Component {
       (this.state.searchTerm !== prevState.searchTerm || this.state.viewRatedMovie !== prevState.viewRatedMovie) &&
       !this.state.offline
     ) {
-      if (!this.state.viewRatedMovie || this.state.offline !== prevState.offline) {
+      if (!this.state.viewRatedMovie) {
         this.service.getSessionIdToStored();
         this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
         this.service.getTotalMovies(this.state.searchTerm).then(this.getTotalResults);
