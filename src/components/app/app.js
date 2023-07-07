@@ -61,10 +61,7 @@ class App extends Component {
 
     this.checkOfflineStatus = () => {
       const offline = !navigator.onLine;
-      this.setState({
-        offline,
-        error: false,
-      });
+      this.setState({ offline });
     };
 
     this.handleSearchValueChange = (searchValue) => {
