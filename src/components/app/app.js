@@ -109,14 +109,15 @@ class App extends Component {
         loading: false,
       });
     };
-
     this.getGenresArray();
 
     this.debounceSearchValue = _debounce((searchValue) => {
-      this.setState({
-        loading: true,
-        searchTerm: searchValue,
-      });
+      if (searchValue.trim() !== '') {
+        this.setState({
+          loading: true,
+          searchTerm: searchValue,
+        });
+      }
     }, 500);
 
     this.checkOfflineStatus();
