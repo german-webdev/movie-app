@@ -95,6 +95,8 @@ class App extends Component {
         ratedMovie: this.updateStateMovies(JSON.parse(storedRatedMovie)),
         loading: false,
       });
+    } else {
+      localStorage.removeItem('ratedMovie');
     }
 
     this.onMovieLoaded = (movies) => {
