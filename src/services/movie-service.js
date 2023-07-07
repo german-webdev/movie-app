@@ -11,13 +11,15 @@ export default class MovieService {
   _apiKey = 'api_key=4029bbd50282fba9b344e7c00decf6d1';
 
   constructor() {
-    const storedSessionId = localStorage.getItem('sessionId');
+    this.getSessionIdToStored = () => {
+      const storedSessionId = localStorage.getItem('sessionId');
 
-    if (!storedSessionId) {
-      this.createGuestSession().then((sessionId) => {
-        localStorage.setItem('sessionId', JSON.stringify(sessionId));
-      });
-    }
+      if (!storedSessionId) {
+        this.createGuestSession().then((sessionId) => {
+          localStorage.setItem('sessionId', JSON.stringify(sessionId));
+        });
+      }
+    };
   }
 
   async createGuestSession() {
@@ -30,15 +32,25 @@ export default class MovieService {
     return await res.json();
   }
 
-  async createRequestToken() {
-    const url = 'authentication/token/new';
-    const res = await fetch(`${this._apiBase}${url}?${this._apiKey}`);
-
+  async requestRatedMovie() {
+    const guestSession = await JSON.parse(localStorage.getItem('sessionId'));
+    const url = `${this._apiBase}guest_session/${guestSession.guest_session_id}/rated/movies?${this._apiKey}`;
+    const res = await fetch(`${url}`);
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
     }
     return await res.json();
   }
+
+  // async createRequestToken() {
+  //   const url = 'authentication/token/new';
+  //   const res = await fetch(`${this._apiBase}${url}?${this._apiKey}`);
+
+  //   if (!res.ok) {
+  //     throw new Error(`Could not fetch ${url}, received ${res.status}`);
+  //   }
+  //   return await res.json();
+  // }
 
   async addRating(movieId, value) {
     const guestSession = JSON.parse(localStorage.getItem('sessionId'));
@@ -75,16 +87,6 @@ export default class MovieService {
 
   async getAllGenres() {
     const url = `${this._apiBase}genre/movie/list?${this._apiKey}&language=en`;
-    const res = await fetch(`${url}`);
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url}, received ${res.status}`);
-    }
-    return await res.json();
-  }
-
-  async requestRatedMovie() {
-    const guestSession = JSON.parse(localStorage.getItem('sessionId'));
-    const url = `${this._apiBase}guest_session/${guestSession.guest_session_id}/rated/movies?${this._apiKey}`;
     const res = await fetch(`${url}`);
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);

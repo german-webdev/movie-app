@@ -89,6 +89,9 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.service.getSessionIdToStored();
+    this.getGenresArray();
+
     const storedRatedMovie = localStorage.getItem('ratedMovie');
 
     if (storedRatedMovie) {
@@ -96,8 +99,6 @@ class App extends Component {
         ratedMovie: this.updateStateMovies(JSON.parse(storedRatedMovie)),
         loading: false,
       });
-    } else {
-      localStorage.removeItem('ratedMovie');
     }
 
     this.onMovieLoaded = (movies) => {
@@ -106,7 +107,6 @@ class App extends Component {
         loading: false,
       });
     };
-    this.getGenresArray();
 
     this.debounceSearchValue = _debounce((searchValue) => {
       if (searchValue.trim() !== '') {
@@ -127,14 +127,13 @@ class App extends Component {
       (this.state.searchTerm !== prevState.searchTerm || this.state.viewRatedMovie !== prevState.viewRatedMovie) &&
       !this.state.offline
     ) {
-      if (this.state.viewRatedMovie === false) {
+      if (!this.state.viewRatedMovie || this.state.offline !== prevState.offline) {
+        this.service.getSessionIdToStored();
         this.service.getMovies(this.state.searchTerm).then(this.onMovieLoaded).catch(this.onError);
         this.service.getTotalMovies(this.state.searchTerm).then(this.getTotalResults);
-      } else {
-        this.service.getRatedMovie().then(this.onRatedMovieLoaded).catch(this.onError);
-        this.setState({
-          loading: true,
-        });
+      } else if (localStorage.getItem('sessionId')) {
+        this.service.getRatedMovie().then(this.onRatedMovieLoaded);
+        this.setState({ loading: true });
       }
     }
 
@@ -175,7 +174,7 @@ class App extends Component {
 
     const errorMessage = error && !offline && !loading ? <ErrorIndicator /> : null;
     const offlineMessage = offline && !loading ? <OfflineIndicator /> : null;
-    const spinner = loading ? <Spinner /> : null;
+    const spinner = loading && !offline ? <Spinner /> : null;
     const content = hasData ? (
       <MovieList movies={movies} ratedMovie={ratedMovie} viewRatedMovie={viewRatedMovie} />
     ) : null;
