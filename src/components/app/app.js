@@ -5,6 +5,7 @@ import _debounce from 'lodash/debounce';
 
 import MovieService from '../../services/movie-service';
 import ErrorIndicator from '../error-indicator/error-indicator';
+import ErrorBoundary from '../error-boundry';
 import OfflineIndicator from '../offline-indicator';
 import MovieList from '../movie-list';
 import MovieServiceContext from '../movie-service-context';
@@ -60,7 +61,10 @@ class App extends Component {
 
     this.checkOfflineStatus = () => {
       const offline = !navigator.onLine;
-      this.setState({ offline });
+      this.setState({
+        offline,
+        error: false,
+      });
     };
 
     this.handleSearchValueChange = (searchValue) => {
@@ -166,10 +170,10 @@ class App extends Component {
       searchValue,
     } = this.state;
 
-    const hasData = !(loading || error);
+    const hasData = !(loading || error || offline);
 
-    const errorMessage = error ? <ErrorIndicator /> : null;
-    const offlineMessage = offline ? <OfflineIndicator /> : null;
+    const errorMessage = error && !offline && !loading ? <ErrorIndicator /> : null;
+    const offlineMessage = offline && !loading ? <OfflineIndicator /> : null;
     const spinner = loading ? <Spinner /> : null;
     const content = hasData ? (
       <MovieList movies={movies} ratedMovie={ratedMovie} viewRatedMovie={viewRatedMovie} />
@@ -185,25 +189,27 @@ class App extends Component {
       );
 
     return (
-      <MovieServiceContext.Provider value={{ genres }}>
-        <div className="wrapper">
-          <header className="header">
-            <Tab
-              onHandleSearchValueChange={this.handleSearchValueChange}
-              searchValue={searchValue}
-              onToggleTab={this.onToggleTab}
-            />
-            {nothing}
-          </header>
-          <main className="main">
-            {errorMessage}
-            {offlineMessage}
-            {spinner}
-            {content}
-          </main>
-          <footer className="footer">{pagination}</footer>
-        </div>
-      </MovieServiceContext.Provider>
+      <ErrorBoundary>
+        <MovieServiceContext.Provider value={{ genres }}>
+          <div className="wrapper">
+            <header className="header">
+              <Tab
+                onHandleSearchValueChange={this.handleSearchValueChange}
+                searchValue={searchValue}
+                onToggleTab={this.onToggleTab}
+              />
+              {nothing}
+            </header>
+            <main className="main">
+              {errorMessage}
+              {offlineMessage}
+              {spinner}
+              {content}
+            </main>
+            <footer className="footer">{pagination}</footer>
+          </div>
+        </MovieServiceContext.Provider>
+      </ErrorBoundary>
     );
   }
 }

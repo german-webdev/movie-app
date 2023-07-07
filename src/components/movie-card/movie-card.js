@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import './movie-card.css';
 import MovieService from '../../services/movie-service';
 import MovieServiceContext from '../movie-service-context';
+import RatingCircle from '../rating-circle';
 
 class MovieCard extends Component {
   service = new MovieService();
@@ -38,16 +39,6 @@ class MovieCard extends Component {
     const { rate, stars } = this.state;
     const { title, image, date, description, genresIds } = this.props;
 
-    let classRate = 'card-header__rate';
-
-    if (rate > 7) {
-      classRate += ' more7';
-    } else if (rate >= 5) {
-      classRate += ' more5';
-    } else if (rate >= 3) {
-      classRate += ' more3';
-    }
-
     return (
       <>
         <div className="left-part">
@@ -58,9 +49,7 @@ class MovieCard extends Component {
         <div className="right-part">
           <div className="card-header">
             <h1 className="card-header__title">{title}</h1>
-            <span className={classRate}>
-              <span className="card-header__rate-val">{rate}</span>
-            </span>
+            <RatingCircle rate={rate} />
             <div className="movie-date">{date}</div>
             <div className="movie-genre">{this.renderGenresNamesByIds(genresIds, genres)}</div>
           </div>

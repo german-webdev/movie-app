@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import MovieCard from '../movie-card';
+import ErrorBoundry from '../error-boundry';
 
 import './movie-list.css';
 
@@ -12,7 +13,9 @@ const MovieList = ({ movies, ratedMovie, viewRatedMovie }) => {
 
     return (
       <div key={id} className="card">
-        <MovieCard {...movieProps} rate={rate} id={id} />
+        <ErrorBoundry>
+          <MovieCard {...movieProps} rate={rate} id={id} />
+        </ErrorBoundry>
       </div>
     );
   });
